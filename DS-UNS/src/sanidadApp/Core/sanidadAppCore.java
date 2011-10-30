@@ -1,9 +1,18 @@
 package sanidadApp.Core;
 
 import sMySQLappTemplate.Core.AppCoreTemplate;
+import sanidadApp.GUI.MainWindowSanidad;
 
 public class sanidadAppCore extends AppCoreTemplate 
 {
+	MainWindowSanidad rootWindow;
+	
+	public sanidadAppCore()
+	{
+		super();
+		
+		rootWindow = new MainWindowSanidad(this);
+	}
 
 	@Override
 	protected void initData() {
