@@ -14,29 +14,25 @@ import sMySQLappTemplate.Core.Command;
 import sMySQLappTemplate.Core.FeatureTemplate;
 import sMySQLappTemplate.Core.Fechas;
 import sanidadApp.Core.sanidadAppCore;
-import sanidadApp.GUI.FormularioAltaMedicos;
+import sanidadApp.GUI.VentanaGestionMedicos;
 
-public class AltaMedicos extends FeatureTemplate
+public class ABM_Medicos extends FeatureTemplate
 {	
 	protected Date today;
 	
-	protected FormularioAltaMedicos Formulario;
+	protected VentanaGestionMedicos ventana;
 	
-	public AltaMedicos(sanidadAppCore app)
+	public ABM_Medicos(sanidadAppCore app)
 	{
 		super(app);
-	}	
-	
-	protected void registarBoton(sanidadAppCore app)
-	{
-		app.registerButtonForReservasTools(new AltaPersonalMedico(this), "/images/Whack Notepad ++ modificar.png", "Modificar Solicitud (Agregar Pedido)");
+		app.registerButtonForTools(new GestionMedicos(this), "/images/Admin_Medicos_64.png", "Administrar Personal Medico");
 	}	
 	
 	@SuppressWarnings("unchecked")
-	private class AltaPersonalMedico extends Command
+	private class GestionMedicos extends Command
 	{
 
-		public AltaPersonalMedico(FeatureTemplate feature) {
+		public GestionMedicos(FeatureTemplate feature) {
 			super(feature);
 			// TODO Auto-generated constructor stub
 		}
@@ -44,6 +40,7 @@ public class AltaMedicos extends FeatureTemplate
 		@Override
 		public Object ExecCommand(Object... args)
 		{
+			/*
 			try {
 				today = (Date)appCore.getValue("SELECT CURDATE();");
 			} catch (SQLException e) {
@@ -51,7 +48,8 @@ public class AltaMedicos extends FeatureTemplate
 				e.printStackTrace();
 				return null;
 			}
-			Formulario = new FormularioAltaMedicos(this.receiver);
+			*/
+			ventana = new VentanaGestionMedicos(this.receiver);
 			return null;
 		}		
 	}

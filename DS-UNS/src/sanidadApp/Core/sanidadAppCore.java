@@ -4,46 +4,47 @@ import javax.swing.JPanel;
 
 import sMySQLappTemplate.Core.AppCoreTemplate;
 import sMySQLappTemplate.Core.Command;
+import sMySQLappTemplate.Core.FeatureTemplate;
 import sMySQLappTemplate.Exceptions.InvalidButtonLocation;
+import sanidadApp.Features.ABM_Medicos;
 import sanidadApp.GUI.MainWindowSanidad;
 
 public class sanidadAppCore extends AppCoreTemplate 
 {
 	MainWindowSanidad masterWindow;
 	
+	FeatureTemplate gestionMedicos;
+	
 	public sanidadAppCore()
 	{
 		super();
-		
-		masterWindow = new MainWindowSanidad(this);
 	}
 
 	@Override
 	protected void initData() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void initFeatures() {
 		// TODO Auto-generated method stub
+		gestionMedicos = new ABM_Medicos(this);
 		
 	}
 
 	@Override
 	protected void initGUI() {
 		// TODO Auto-generated method stub
-		
+		masterWindow = new MainWindowSanidad(this);
 	}
 	
 	// METODOS PARA REGISTRA BOTONES
 	
 	@SuppressWarnings("unchecked")
-	public void registerButtonForReservasTools(Command featureComm, String iconPath, String buttonLabel)
+	public void registerButtonForTools(Command featureComm, String iconPath, String buttonLabel)
 	{
-		JPanel appTools = this.masterWindow.reservasTools;
 		try {
-			this.registerNewButtonFor(featureComm, appTools, iconPath, buttonLabel);
+			this.registerNewButtonFor(featureComm, this.masterWindow.tools, iconPath, buttonLabel);
 		} catch (InvalidButtonLocation e) {
 			// TODO cartelito de erro interno
 			e.printStackTrace();

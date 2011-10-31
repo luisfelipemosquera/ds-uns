@@ -28,11 +28,7 @@ public abstract class AppCoreTemplate
 	
 	protected AppCoreTemplate()
 	{
-		this.comLink = new ComModule();
-		
-		this.initData();
-		this.initGUI();
-		this.initFeatures();		
+		this.comLink = new ComModule();		
 		
 		ConnectionCfg defaultConnection = null;
 		try {
@@ -46,6 +42,10 @@ public abstract class AppCoreTemplate
 		new LoginWindow(this, defaultConnection);
 		
 		//if (!comLink.isConnectionEstablished()) System.exit(2);
+		
+		this.initData();
+		this.initGUI();
+		this.initFeatures();
 	}
 
 	/**
