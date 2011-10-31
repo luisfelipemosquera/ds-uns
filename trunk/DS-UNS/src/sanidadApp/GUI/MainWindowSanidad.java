@@ -14,9 +14,7 @@ import javax.swing.event.ListSelectionListener;
 @SuppressWarnings("serial")
 public class MainWindowSanidad extends sMySQLappTemplate.GUI.MainWindowTemplate
 {		
-	public MyButtonPanel applicationsTools;
-	public MyButtonPanel requestsTools; 
-	public MyButtonPanel requirementsTools;
+	public MyButtonPanel reservasTools;
 	
 	public JMenuBar mainMenuBar;
 	
@@ -48,9 +46,9 @@ public class MainWindowSanidad extends sMySQLappTemplate.GUI.MainWindowTemplate
 		this.getContentPane().add(applicationsPane);
 		
 		// Panel de Herramientos de Reservas
-		applicationsTools = new MyButtonPanel();
+		reservasTools = new MyButtonPanel();
 		
-		applicationsPane.add(applicationsTools, BorderLayout.SOUTH);
+		applicationsPane.add(reservasTools, BorderLayout.SOUTH);
 		
 		this.setVisible(true);
 	}
