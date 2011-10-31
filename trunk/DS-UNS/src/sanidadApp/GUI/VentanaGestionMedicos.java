@@ -23,7 +23,7 @@ import sMySQLappTemplate.Core.FeatureTemplate;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 @SuppressWarnings("serial")
-public class FormularioAltaMedicos extends javax.swing.JDialog {
+public class VentanaGestionMedicos extends javax.swing.JDialog {
 	private JScrollPane jScrollPane1;
 	private JScrollPane jScrollPane2;
 	private JButton jButton6;
@@ -43,11 +43,11 @@ public class FormularioAltaMedicos extends javax.swing.JDialog {
 	private JButton jButton2;
 	private JScrollPane jScrollPane3;
 
-	public FormularioAltaMedicos(FeatureTemplate receiver) {
+	public VentanaGestionMedicos(FeatureTemplate receiver) {
 		// TODO Auto-generated constructor stub
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
-		setModal(true);
+		this.setModal(true);
 		getContentPane().setLayout(null);
 		{
 			jScrollPane1 = new JScrollPane();
@@ -80,31 +80,31 @@ public class FormularioAltaMedicos extends javax.swing.JDialog {
 			jLabel1 = new JLabel();
 			getContentPane().add(jLabel1);
 			jLabel1.setText("Personal Medico");
-			jLabel1.setBounds(12, 30, 79, 14);
+			jLabel1.setBounds(12, 30, 104, 14);
 		}
 		{
 			jLabel2 = new JLabel();
 			getContentPane().add(jLabel2);
 			jLabel2.setText("Especialidades");
-			jLabel2.setBounds(302, 12, 71, 14);
+			jLabel2.setBounds(302, 12, 86, 14);
 		}
 		{
 			jLabel3 = new JLabel();
 			getContentPane().add(jLabel3);
 			jLabel3.setText("Especialidades");
-			jLabel3.setBounds(420, 12, 79, 14);
+			jLabel3.setBounds(420, 12, 93, 14);
 		}
 		{
 			jLabel4 = new JLabel();
 			getContentPane().add(jLabel4);
 			jLabel4.setText("Poseidas");
-			jLabel4.setBounds(302, 30, 43, 14);
+			jLabel4.setBounds(302, 30, 64, 14);
 		}
 		{
 			jLabel5 = new JLabel();
 			getContentPane().add(jLabel5);
 			jLabel5.setText("Existentes");
-			jLabel5.setBounds(420, 30, 48, 14);
+			jLabel5.setBounds(420, 30, 69, 14);
 		}
 		{
 			jTextField1 = new JTextField();
@@ -134,27 +134,30 @@ public class FormularioAltaMedicos extends javax.swing.JDialog {
 			jButton3 = new JButton();
 			getContentPane().add(jButton3);
 			jButton3.setText("Agregar");
-			jButton3.setBounds(12, 271, 57, 21);
+			jButton3.setBounds(12, 271, 83, 21);
 		}
 		{
 			jButton4 = new JButton();
 			getContentPane().add(jButton4);
 			jButton4.setText("Eliminar");
-			jButton4.setBounds(154, 271, 60, 21);
+			jButton4.setBounds(200, 271, 80, 21);
 		}
 		{
 			jButton5 = new JButton();
 			getContentPane().add(jButton5);
 			jButton5.setText("Actualizar");
-			jButton5.setBounds(83, 271, 60, 21);
+			jButton5.setBounds(106, 271, 83, 21);
 		}
 		{
 			jButton6 = new JButton();
 			getContentPane().add(jButton6);
 			jButton6.setText("Regresar");
-			jButton6.setBounds(458, 351, 71, 21);
+			jButton6.setBounds(443, 351, 86, 21);
 		}
-		this.setSize(548, 410);
+		this.pack();
+		this.setSize(548, 428);
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
 	}
 
 }
