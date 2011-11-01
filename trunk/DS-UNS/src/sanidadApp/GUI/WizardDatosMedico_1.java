@@ -1,5 +1,10 @@
 package sanidadApp.GUI;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -8,6 +13,8 @@ import javax.swing.JDialog;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
+import sanidadApp.Features.Alta_Medicos;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -35,14 +42,26 @@ public class WizardDatosMedico_1 extends JDialog
 	private JLabel jLabelNombre;
 	private JTextField jTextFieldApellido;
 	
-	public WizardDatosMedico_1(){
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	private Alta_Medicos control;
+	
+	public Alta_Medicos getControl() {
+		return control;
+	}
+
+	public WizardDatosMedico_1(Alta_Medicos control){
+		this.control = control;
+		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		this.addWindowListener(new WindowAdapter() {
+			    public void windowClosing(WindowEvent we) {
+			    	(((WizardDatosMedico_1) we.getWindow()).getControl()).cancelar();
+			    }
+			});
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		this.setModal(true);
 		this.getContentPane().setLayout(null);
 		initGUI();
 		this.pack();
-		this.setSize(400, 300);
+		this.setSize(400, 320);
 		this.setLocationRelativeTo(null);
 	}
 
@@ -103,17 +122,26 @@ public class WizardDatosMedico_1 extends JDialog
 					getContentPane().add(jButtonSiguiente);
 					jButtonSiguiente.setText("Siguiente");
 					jButtonSiguiente.setBounds(291, 241, 77, 21);
+					jButtonSiguiente.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							control.siguiente();
+						}
+					});
 				}
 				{
 					jButtonCancelar = new JButton();
 					getContentPane().add(jButtonCancelar);
 					jButtonCancelar.setText("Cancelar");
 					jButtonCancelar.setBounds(204, 241, 76, 21);
+					jButtonCancelar.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							control.cancelar();
+						}
+					});
 				}
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-
 }

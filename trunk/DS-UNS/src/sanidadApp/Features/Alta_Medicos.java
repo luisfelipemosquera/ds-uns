@@ -47,18 +47,23 @@ public class Alta_Medicos extends FeatureTemplate
 				return null;
 			}
 			*/
+			wizardWindow1 = new WizardDatosMedico_1((Alta_Medicos)this.receiver);
+			wizardWindow2 = new WizardDatosMedico_2((Alta_Medicos)this.receiver);
+			wizardWindow1.setVisible(true);
 			return null;
 		}		
 	}
 	
 	public void siguiente()
 	{
-		
+		wizardWindow1.setVisible(false);
+		wizardWindow2.setVisible(true);
 	}
-	
+
 	public void anterior()
 	{
-		
+		wizardWindow2.setVisible(false);
+		wizardWindow1.setVisible(true);
 	}
 	
 	public void guardar()
@@ -68,7 +73,8 @@ public class Alta_Medicos extends FeatureTemplate
 	
 	public void cancelar()
 	{
-		
+		wizardWindow1.dispose();
+		wizardWindow2.dispose();
 	}
 	
 	

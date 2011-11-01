@@ -1,9 +1,16 @@
 package sanidadApp.GUI;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JButton;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+
+import sanidadApp.Features.Alta_Medicos;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -29,15 +36,27 @@ public class WizardDatosMedico_2 extends JDialog
 	private JButton jButtonCancelar;
 	private JButton jButtonAceptar;
 	private JScrollPane jScrollPaneEspExistentes;
+	
+	private Alta_Medicos control;
 
-	public WizardDatosMedico_2(){
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	public Alta_Medicos getControl() {
+		return control;
+	}
+
+	public WizardDatosMedico_2(Alta_Medicos control){
+		this.control = control;
+		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		this.addWindowListener(new WindowAdapter() {
+			    public void windowClosing(WindowEvent we) {
+			    	(((WizardDatosMedico_2) we.getWindow()).getControl()).cancelar();
+			    }
+			});
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		this.setModal(true);
 		this.getContentPane().setLayout(null);
 		initGUI();
 		this.pack();
-		this.setSize(400, 300);
+		this.setSize(400, 320);
 		this.setLocationRelativeTo(null);	
 	}
 
@@ -54,7 +73,7 @@ public class WizardDatosMedico_2 extends JDialog
 			jLabelEspecialidadesExistentes = new JLabel();
 			getContentPane().add(jLabelEspecialidadesExistentes);
 			jLabelEspecialidadesExistentes.setText("Especialidades Existentes");
-			jLabelEspecialidadesExistentes.setBounds(24, 21, 122, 14);
+			jLabelEspecialidadesExistentes.setBounds(24, 21, 151, 14);
 		}
 		{
 			jScrollPaneEspExistentes = new JScrollPane();
@@ -65,19 +84,34 @@ public class WizardDatosMedico_2 extends JDialog
 			jButtonAceptar = new JButton();
 			getContentPane().add(jButtonAceptar);
 			jButtonAceptar.setText("Guardar");
-			jButtonAceptar.setBounds(297, 241, 68, 21);
+			jButtonAceptar.setBounds(287, 241, 75, 21);
+			jButtonAceptar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					control.guardar();
+				}
+			});
 		}
 		{
 			jButtonCancelar = new JButton();
 			getContentPane().add(jButtonCancelar);
 			jButtonCancelar.setText("Cancelar");
-			jButtonCancelar.setBounds(221, 241, 65, 21);
+			jButtonCancelar.setBounds(199, 241, 75, 21);
+			jButtonCancelar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					control.cancelar();
+				}
+			});
 		}
 		{
 			jButtonAnterior = new JButton();
 			getContentPane().add(jButtonAnterior);
 			jButtonAnterior.setText("Anterior");
-			jButtonAnterior.setBounds(147, 241, 63, 21);
+			jButtonAnterior.setBounds(113, 241, 75, 21);
+			jButtonAnterior.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					control.anterior();
+				}
+			});
 		}
 		{
 			jScrollPaneEspPoseidas = new JScrollPane();
@@ -89,12 +123,22 @@ public class WizardDatosMedico_2 extends JDialog
 			getContentPane().add(jButtonAddEsp);
 			jButtonAddEsp.setText("-->");
 			jButtonAddEsp.setBounds(70, 187, 59, 21);
+			jButtonAddEsp.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					control.addEsp("UNA ESPECIALIDAD");
+				}
+			});
 		}
 		{
 			jButtonremEsp = new JButton();
 			getContentPane().add(jButtonremEsp);
 			jButtonremEsp.setText("<--");
 			jButtonremEsp.setBounds(263, 187, 57, 21);
+			jButtonremEsp.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					control.remEsp("UNA ESPECIALIDAD");
+				}
+			});
 		}
 		
 	}
