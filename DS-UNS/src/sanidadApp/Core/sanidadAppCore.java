@@ -6,7 +6,7 @@ import sMySQLappTemplate.Core.AppCoreTemplate;
 import sMySQLappTemplate.Core.Command;
 import sMySQLappTemplate.Core.FeatureTemplate;
 import sMySQLappTemplate.Exceptions.InvalidButtonLocation;
-import sanidadApp.Features.ABM_Medicos;
+import sanidadApp.Features.Alta_Medicos;
 import sanidadApp.GUI.MainWindowSanidad;
 
 public class sanidadAppCore extends AppCoreTemplate 
@@ -28,7 +28,7 @@ public class sanidadAppCore extends AppCoreTemplate
 	@Override
 	protected void initFeatures() {
 		// TODO Auto-generated method stub
-		gestionMedicos = new ABM_Medicos(this);
+		gestionMedicos = new Alta_Medicos(this);
 		
 	}
 
