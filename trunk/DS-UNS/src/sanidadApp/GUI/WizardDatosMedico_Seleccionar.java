@@ -96,4 +96,9 @@ public class WizardDatosMedico_Seleccionar extends JDialog
 		tablaMedicos = new MyTable(te);
 		jScrollPaneMedicos.setViewportView(tablaMedicos);
 	}
+	
+	public void setSigButtonText(String text)
+	{
+		jButtonSiguiente.setText(text);
+	}
 }

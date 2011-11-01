@@ -20,6 +20,8 @@ public class Modificacion_Medicos extends Alta_Medicos
 	protected TablaMedicos TablaMedicosExistentes;
 	
 	protected int medico;
+	
+	public Modificacion_Medicos(){}
 
 	public Modificacion_Medicos(sanidadAppCore app) 
 	{	
