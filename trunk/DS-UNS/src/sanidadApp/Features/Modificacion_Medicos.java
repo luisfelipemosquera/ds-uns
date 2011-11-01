@@ -1,6 +1,10 @@
 package sanidadApp.Features;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.swing.DefaultComboBoxModel;
 
 import sMySQLappTemplate.Core.Command;
 import sMySQLappTemplate.Core.FeatureTemplate;
@@ -45,35 +49,40 @@ public class Modificacion_Medicos extends Alta_Medicos
 			*/
 			cambioEspecialidades = new HashMap<String, String>();
 			
-			TablaEspExistentes = new TablaEspecialidades();
-			TablaEspPoseidas = new TablaEspecialidades();
+			tablaEspExistentes = new TablaEspecialidades();
+			tablaEspPoseidas = new TablaEspecialidades();
 			TablaMedicosExistentes = new TablaMedicos();
+			docTypes = new DefaultComboBoxModel();
 			
-			wizardWindow0 = new WizardDatosMedico_Seleccionar((Modificacion_Medicos)this.receiver);
-			
+			wizardWindow0 = new WizardDatosMedico_Seleccionar((Modificacion_Medicos)this.receiver);			
 			wizardWindow1 = new WizardDatosMedico_Persona((Modificacion_Medicos)this.receiver);
 			wizardWindow2 = new WizardDatosMedico_Especialidades((Modificacion_Medicos)this.receiver);
 			
-			wizardWindow0.viewMedicos(TablaMedicosExistentes);
-			wizardWindow2.viewEspExistentes(TablaEspExistentes);
-			wizardWindow2.viewEspPoseidas(TablaEspPoseidas);
-			
-			wizardWindow0.setVisible(true);
-			
 			// Datos de Prueba
-			TablaEspExistentes.setRowCount(3);
-			TablaEspExistentes.setValueAt("Especialidad X", 0, 0);
-			TablaEspExistentes.setValueAt("Especialidad Y", 1, 0);
-			TablaEspExistentes.setValueAt("Especialidad Z", 2, 0);
-			TablaEspPoseidas.setRowCount(1);
-			TablaEspPoseidas.setValueAt("Especialidad R", 0, 0);
+			tablaEspExistentes.setRowCount(3);
+			tablaEspExistentes.setValueAt("Especialidad X", 0, 0);
+			tablaEspExistentes.setValueAt("Especialidad Y", 1, 0);
+			tablaEspExistentes.setValueAt("Especialidad Z", 2, 0);
+			tablaEspPoseidas.setRowCount(1);
+			tablaEspPoseidas.setValueAt("Especialidad R", 0, 0);
+			
+			docTypes.addElement("DNI");
+			docTypes.addElement("LE");
+			docTypes.addElement("LC");
 			
 			TablaMedicosExistentes.setRowCount(1);
 			TablaMedicosExistentes.setValueAt("Gonzalez", 0, 0);
 			TablaMedicosExistentes.setValueAt("Juan Domingo", 0, 1);
-			TablaMedicosExistentes.setValueAt("DNI", 0, 2);
+			TablaMedicosExistentes.setValueAt("LE", 0, 2);
 			TablaMedicosExistentes.setValueAt("31298030", 0, 3);
-			// Fin Datos de Prueba
+			// Fin Datos de Prueba			
+			
+			wizardWindow0.viewMedicos(TablaMedicosExistentes);
+			wizardWindow1.setDocTypeData(docTypes);
+			wizardWindow2.viewEspExistentes(tablaEspExistentes);
+			wizardWindow2.viewEspPoseidas(tablaEspPoseidas);
+			
+			wizardWindow0.setVisible(true);
 			
 			return null;
 		}		
@@ -86,9 +95,15 @@ public class Modificacion_Medicos extends Alta_Medicos
 		{
 			String apellido = TablaMedicosExistentes.getValueAt(medicoSeleccionado, 0).toString();
 			String nombre = TablaMedicosExistentes.getValueAt(medicoSeleccionado, 1).toString();
-			String tipoDNI = TablaMedicosExistentes.getValueAt(medicoSeleccionado, 2).toString();
-			String numeroDNI = TablaMedicosExistentes.getValueAt(medicoSeleccionado, 3).toString();
-			if(cargarDatos(tipoDNI, numeroDNI, apellido, nombre))
+			String tipoDoc = TablaMedicosExistentes.getValueAt(medicoSeleccionado, 2).toString();
+			String numeroDoc = TablaMedicosExistentes.getValueAt(medicoSeleccionado, 3).toString();
+			
+			wizardWindow1.setDocType(tipoDoc);
+			wizardWindow1.setDocNumber(numeroDoc);
+			wizardWindow1.setApellido(apellido);
+			wizardWindow1.setNombre(nombre);
+			
+			if(cargarDatos(tipoDoc, numeroDoc, apellido, nombre))
 			{
 				wizardWindow0.setVisible(false);
 				wizardWindow1.setVisible(true);
@@ -102,7 +117,25 @@ public class Modificacion_Medicos extends Alta_Medicos
 	
 	public void guardar()
 	{
-		System.out.println("Guardando Cambios");
+		// Debug Prints
+		System.out.println("Modificando Entrada Para Medico:");
+		System.out.println("-- Comienzo de Entrada --"); 
+		System.out.println("Tipo DNI: " + tipoDoc);
+		System.out.println("Numero DNI: " + numeroDoc);
+		System.out.println("Apellido: " + apellido);
+		System.out.println("Nombres: " + nombre);
+		System.out.println();
+		Iterator it = cambioEspecialidades.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry<String,String> pairs = (Map.Entry<String,String>)it.next();
+	        System.out.println(pairs.getValue() + " " + pairs.getKey());
+	    }
+	    System.out.println("-- Fin de Entrada --"); 
+	    System.out.println();
+		
+		wizardWindow0.dispose();
+		wizardWindow1.dispose();
+		wizardWindow2.dispose();
 	}
 	
 	public void cancelar()

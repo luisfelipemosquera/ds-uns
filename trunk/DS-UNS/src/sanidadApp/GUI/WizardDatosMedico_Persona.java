@@ -149,4 +149,25 @@ public class WizardDatosMedico_Persona extends JDialog
 			e.printStackTrace();
 		}
 	}
+
+	public void setDocTypeData(DefaultComboBoxModel docTypes) {
+		this.jComboBoxTipoDNI.setModel(docTypes);		
+	}
+
+	public void setDocType(String tipoDoc) 
+	{
+		jComboBoxTipoDNI.setSelectedItem(tipoDoc);		
+	}
+
+	public void setDocNumber(String numeroDoc) {
+		jTextFieldNumeroDNI.setText(String.valueOf(numeroDoc));		
+	}
+
+	public void setApellido(String apellido) {
+		jTextFieldApellido.setText(apellido);		
+	}
+
+	public void setNombre(String nombre) {
+		jTextFieldNombre.setText(nombre);		
+	}
 }

@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.swing.DefaultComboBoxModel;
+
 import com.mysql.jdbc.RowData;
 
 import sMySQLappTemplate.Core.Command;
@@ -21,13 +23,15 @@ public class Alta_Medicos extends FeatureTemplate
 	protected WizardDatosMedico_Persona wizardWindow1;
 	protected WizardDatosMedico_Especialidades wizardWindow2;
 	
-	protected String tipoDNI;
-	protected long numeroDNI;
+	protected String tipoDoc;
+	protected long numeroDoc;
 	protected String apellido;
 	protected String nombre;
 	
-	protected TablaEspecialidades TablaEspExistentes;
-	protected TablaEspecialidades TablaEspPoseidas;
+	protected TablaEspecialidades tablaEspExistentes;
+	protected TablaEspecialidades tablaEspPoseidas;
+	
+	protected DefaultComboBoxModel docTypes;
 	
 	protected HashMap<String, String> cambioEspecialidades;
 	
@@ -61,19 +65,30 @@ public class Alta_Medicos extends FeatureTemplate
 			}
 			*/
 			cambioEspecialidades = new HashMap<String, String>();
-			TablaEspExistentes = new TablaEspecialidades();
-			TablaEspExistentes.setRowCount(3);
-			TablaEspExistentes.setValueAt("Especialidad X", 0, 0);
-			TablaEspExistentes.setValueAt("Especialidad Y", 1, 0);
-			TablaEspExistentes.setValueAt("Especialidad Z", 2, 0);
-			TablaEspPoseidas = new TablaEspecialidades();
-			TablaEspPoseidas.setRowCount(1);
-			TablaEspPoseidas.setValueAt("Especialidad R", 0, 0);
+			tablaEspExistentes = new TablaEspecialidades();
+			tablaEspPoseidas = new TablaEspecialidades();
+			docTypes = new DefaultComboBoxModel();
+			
 			wizardWindow1 = new WizardDatosMedico_Persona((Alta_Medicos)this.receiver);
 			wizardWindow2 = new WizardDatosMedico_Especialidades((Alta_Medicos)this.receiver);
-			wizardWindow2.viewEspExistentes(TablaEspExistentes);
-			wizardWindow2.viewEspPoseidas(TablaEspPoseidas);
+			
+			// datos de prueba
+			tablaEspExistentes.setRowCount(3);
+			tablaEspExistentes.setValueAt("Especialidad X", 0, 0);
+			tablaEspExistentes.setValueAt("Especialidad Y", 1, 0);
+			tablaEspExistentes.setValueAt("Especialidad Z", 2, 0);
+			
+			docTypes.addElement("DNI");
+			docTypes.addElement("LE");
+			docTypes.addElement("LC");
+			
+			// fin datos de prueba
+			
+			wizardWindow1.setDocTypeData(docTypes);
+			wizardWindow2.viewEspExistentes(tablaEspExistentes);
+			wizardWindow2.viewEspPoseidas(tablaEspPoseidas);
 			wizardWindow1.setVisible(true);
+			
 			return null;
 		}		
 	}
@@ -90,8 +105,8 @@ public class Alta_Medicos extends FeatureTemplate
 	protected boolean cargarDatos(String tipoDNI, String numeroDNI, String apellido, String nombre)
 	{
 		try {
-			this.numeroDNI = Integer.parseInt(numeroDNI);
-			this.tipoDNI = sanitize(tipoDNI);
+			this.numeroDoc = Integer.parseInt(numeroDNI);
+			this.tipoDoc = sanitize(tipoDNI);
 			this.apellido = sanitize(apellido);
 			this.nombre = sanitize(nombre);
 			return true;
@@ -130,19 +145,20 @@ public class Alta_Medicos extends FeatureTemplate
 	
 	public void guardar()
 	{
-		// TODO consultas Adecuadas
-		System.out.println("Tipo DNI: " + tipoDNI);
-		System.out.println("Numero DNI: " + numeroDNI);
+		// Debug Prints
+		System.out.println("Creando Nueva Entrada Para Medico:");
+		System.out.println("-- Comienzo de Entrada --"); 
+		System.out.println("Tipo DNI: " + tipoDoc);
+		System.out.println("Numero DNI: " + numeroDoc);
 		System.out.println("Apellido: " + apellido);
 		System.out.println("Nombres: " + nombre);
 		System.out.println();
 		Iterator it = cambioEspecialidades.entrySet().iterator();
 	    while (it.hasNext()) {
 	        Map.Entry<String,String> pairs = (Map.Entry<String,String>)it.next();
-	        System.out.println(pairs.getKey() + " = " + pairs.getValue());
+	        System.out.println(pairs.getValue() + " " + pairs.getKey());
 	    }
-	    System.out.println();
-	    System.out.println("---");
+	    System.out.println("-- Fin de Entrada --"); 
 	    System.out.println();
 	    
 	    wizardWindow1.dispose();
@@ -159,7 +175,7 @@ public class Alta_Medicos extends FeatureTemplate
 	{
 		wizardWindow2.setTitle("Especialidades");
 		try {
-			String esp = TablaEspExistentes.getValueAt(espSelecionada, 0).toString();
+			String esp = tablaEspExistentes.getValueAt(espSelecionada, 0).toString();
 			
 			String espAction = cambioEspecialidades.get(esp); 
 			if (espAction == null)
@@ -167,10 +183,10 @@ public class Alta_Medicos extends FeatureTemplate
 			else if(espAction == "rem")
 				cambioEspecialidades.remove(esp);
 			
-			TablaEspExistentes.removeRow(espSelecionada);
-			int rc = TablaEspPoseidas.getRowCount();
-			TablaEspPoseidas.setRowCount(rc+1);
-			TablaEspPoseidas.setValueAt(esp, rc, 0);
+			tablaEspExistentes.removeRow(espSelecionada);
+			int rc = tablaEspPoseidas.getRowCount();
+			tablaEspPoseidas.setRowCount(rc+1);
+			tablaEspPoseidas.setValueAt(esp, rc, 0);
 		}
 		catch(Exception e)
 		{
@@ -182,7 +198,7 @@ public class Alta_Medicos extends FeatureTemplate
 	{
 		wizardWindow2.setTitle("Especialidades");
 		try {
-			String esp = TablaEspPoseidas.getValueAt(espSelecionada, 0).toString();
+			String esp = tablaEspPoseidas.getValueAt(espSelecionada, 0).toString();
 			
 			String espAction = cambioEspecialidades.get(esp); 
 			if (espAction == null)
@@ -190,24 +206,16 @@ public class Alta_Medicos extends FeatureTemplate
 			else if(espAction == "add")
 				cambioEspecialidades.remove(esp);
 			
-			TablaEspPoseidas.removeRow(espSelecionada);
-			int rc = TablaEspExistentes.getRowCount();
-			TablaEspExistentes.setRowCount(rc+1);
-			TablaEspExistentes.setValueAt(esp, rc, 0);
+			tablaEspPoseidas.removeRow(espSelecionada);
+			int rc = tablaEspExistentes.getRowCount();
+			tablaEspExistentes.setRowCount(rc+1);
+			tablaEspExistentes.setValueAt(esp, rc, 0);
 		}
 		catch(Exception e)
 		{
 			wizardWindow2.setTitle(" -- ERROR: Debe Seleccionar Una Especialidad --");
 		}
 	}
-	
-	public void loadData_TipoDoc(){}
-	
-	public void loadData_NumDoc(){}
-	
-	public void loadData_Apellido(){}
-	
-	public void loadData_Nombre(){}	
 }
 
 
