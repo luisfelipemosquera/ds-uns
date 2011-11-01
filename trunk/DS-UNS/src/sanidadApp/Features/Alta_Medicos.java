@@ -1,31 +1,29 @@
 package sanidadApp.Features;
 
 import java.sql.Date;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JOptionPane;
-
-import sMySQLappTemplate.Core.AppCoreTemplate;
 import sMySQLappTemplate.Core.Command;
 import sMySQLappTemplate.Core.FeatureTemplate;
-import sMySQLappTemplate.Core.Fechas;
 import sanidadApp.Core.sanidadAppCore;
-import sanidadApp.GUI.VentanaGestionMedicos;
+import sanidadApp.GUI.WizardDatosMedico_1;
+import sanidadApp.GUI.WizardDatosMedico_2;
 
-public class ABM_Medicos extends FeatureTemplate
+public class Alta_Medicos extends FeatureTemplate
 {	
 	protected Date today;
 	
-	protected VentanaGestionMedicos ventana;
+	protected WizardDatosMedico_1 wizardWindow1;
+	protected WizardDatosMedico_2 wizardWindow2;
 	
-	public ABM_Medicos(sanidadAppCore app)
+	protected String TipoDNI;
+	protected long NumeroDNI;
+	protected String Apellido;
+	protected String Nombre;
+	
+	public Alta_Medicos(sanidadAppCore app)
 	{
 		super(app);
-		app.registerButtonForTools(new GestionMedicos(this), "/images/Admin_Medicos_64.png", "Administrar Personal Medico");
+		app.registerButtonForTools(new GestionMedicos(this), "/images/add_medic_64.png", "Administrar Personal Medico");
 	}	
 	
 	@SuppressWarnings("unchecked")
@@ -49,8 +47,51 @@ public class ABM_Medicos extends FeatureTemplate
 				return null;
 			}
 			*/
-			ventana = new VentanaGestionMedicos(this.receiver);
 			return null;
 		}		
 	}
+	
+	public void siguiente()
+	{
+		
+	}
+	
+	public void anterior()
+	{
+		
+	}
+	
+	public void guardar()
+	{
+		
+	}
+	
+	public void cancelar()
+	{
+		
+	}
+	
+	
+	public void addEsp(String esp)
+	{
+		
+	}
+	
+	public void remEsp(String esp)
+	{
+		
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
