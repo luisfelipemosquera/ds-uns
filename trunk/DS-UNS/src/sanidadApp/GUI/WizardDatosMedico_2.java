@@ -10,7 +10,9 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
+import sMySQLappTemplate.GUI.MyTable;
 import sanidadApp.Features.Alta_Medicos;
+import sanidadApp.Features.TablaEspecialidades;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -38,6 +40,9 @@ public class WizardDatosMedico_2 extends JDialog
 	private JScrollPane jScrollPaneEspExistentes;
 	
 	private Alta_Medicos control;
+	
+	private MyTable tablaEspExistentes;
+	private MyTable tablaEspPoseidas;
 
 	public Alta_Medicos getControl() {
 		return control;
@@ -66,13 +71,13 @@ public class WizardDatosMedico_2 extends JDialog
 		{
 			jLabelEspecialidadesPoseidas = new JLabel();
 			getContentPane().add(jLabelEspecialidadesPoseidas);
-			jLabelEspecialidadesPoseidas.setText("Especialidades Poseidas");
+			jLabelEspecialidadesPoseidas.setText("Poseidas");
 			jLabelEspecialidadesPoseidas.setBounds(212, 21, 153, 14);
 		}
 		{
 			jLabelEspecialidadesExistentes = new JLabel();
 			getContentPane().add(jLabelEspecialidadesExistentes);
-			jLabelEspecialidadesExistentes.setText("Especialidades Existentes");
+			jLabelEspecialidadesExistentes.setText("Existentes");
 			jLabelEspecialidadesExistentes.setBounds(24, 21, 151, 14);
 		}
 		{
@@ -125,7 +130,7 @@ public class WizardDatosMedico_2 extends JDialog
 			jButtonAddEsp.setBounds(70, 187, 59, 21);
 			jButtonAddEsp.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
-					control.addEsp("UNA ESPECIALIDAD");
+					control.addEsp(tablaEspExistentes.getSelectedRow());
 				}
 			});
 		}
@@ -136,11 +141,21 @@ public class WizardDatosMedico_2 extends JDialog
 			jButtonremEsp.setBounds(263, 187, 57, 21);
 			jButtonremEsp.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
-					control.remEsp("UNA ESPECIALIDAD");
+					control.remEsp(tablaEspPoseidas.getSelectedRow());
 				}
 			});
-		}
-		
+		}		
 	}
-
+	
+	public void viewEspExistentes(TablaEspecialidades te)
+	{
+		tablaEspExistentes = new MyTable(te);
+		jScrollPaneEspExistentes.setViewportView(tablaEspExistentes);
+	}
+	
+	public void viewEspPoseidas(TablaEspecialidades te)
+	{
+		tablaEspPoseidas = new MyTable(te);
+		jScrollPaneEspPoseidas.setViewportView(tablaEspPoseidas);
+	}
 }

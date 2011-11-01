@@ -124,7 +124,12 @@ public class WizardDatosMedico_1 extends JDialog
 					jButtonSiguiente.setBounds(291, 241, 77, 21);
 					jButtonSiguiente.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
-							control.siguiente();
+							control.siguiente(
+								jComboBoxTipoDNI.getSelectedItem().toString(),
+								jTextFieldNumeroDNI.getText(),
+								jTextFieldApellido.getText(),
+								jTextFieldNombre.getText()
+							);
 						}
 					});
 				}
