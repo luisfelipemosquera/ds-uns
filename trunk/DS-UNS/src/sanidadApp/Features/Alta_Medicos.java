@@ -11,15 +11,15 @@ import com.mysql.jdbc.RowData;
 import sMySQLappTemplate.Core.Command;
 import sMySQLappTemplate.Core.FeatureTemplate;
 import sanidadApp.Core.sanidadAppCore;
-import sanidadApp.GUI.WizardDatosMedico_1;
-import sanidadApp.GUI.WizardDatosMedico_2;
+import sanidadApp.GUI.WizardDatosMedico_Persona;
+import sanidadApp.GUI.WizardDatosMedico_Especialidades;
 
 public class Alta_Medicos extends FeatureTemplate
 {	
 	protected Date today;
 	
-	protected WizardDatosMedico_1 wizardWindow1;
-	protected WizardDatosMedico_2 wizardWindow2;
+	protected WizardDatosMedico_Persona wizardWindow1;
+	protected WizardDatosMedico_Especialidades wizardWindow2;
 	
 	protected String tipoDNI;
 	protected long numeroDNI;
@@ -31,14 +31,16 @@ public class Alta_Medicos extends FeatureTemplate
 	
 	protected HashMap<String, String> cambioEspecialidades;
 	
+	public Alta_Medicos(){};
+	
 	public Alta_Medicos(sanidadAppCore app)
 	{
-		super(app);
-		app.registerButtonForTools(new GestionMedicos(this), "/images/add_medic_64.png", "Administrar Personal Medico");
+		this.appCore = app;
+		app.registerButtonForTools(new GestionMedicos(this), "/images/add_medic_64.png", "Agregar Personal Medico");
 	}	
 	
 	@SuppressWarnings("unchecked")
-	private class GestionMedicos extends Command
+	protected class GestionMedicos extends Command
 	{
 
 		public GestionMedicos(FeatureTemplate feature) {
@@ -67,8 +69,8 @@ public class Alta_Medicos extends FeatureTemplate
 			TablaEspPoseidas = new TablaEspecialidades();
 			TablaEspPoseidas.setRowCount(1);
 			TablaEspPoseidas.setValueAt("Especialidad R", 0, 0);
-			wizardWindow1 = new WizardDatosMedico_1((Alta_Medicos)this.receiver);
-			wizardWindow2 = new WizardDatosMedico_2((Alta_Medicos)this.receiver);
+			wizardWindow1 = new WizardDatosMedico_Persona((Alta_Medicos)this.receiver);
+			wizardWindow2 = new WizardDatosMedico_Especialidades((Alta_Medicos)this.receiver);
 			wizardWindow2.viewEspExistentes(TablaEspExistentes);
 			wizardWindow2.viewEspPoseidas(TablaEspPoseidas);
 			wizardWindow1.setVisible(true);
@@ -77,14 +79,22 @@ public class Alta_Medicos extends FeatureTemplate
 	}
 	
 	public void siguiente(String tipoDNI, String numeroDNI, String apellido, String nombre)
+	{	
+		if (this.cargarDatos(tipoDNI, numeroDNI, apellido, nombre))
+		{
+			wizardWindow1.setVisible(false);
+			wizardWindow2.setVisible(true);
+		}
+	}
+	
+	protected boolean cargarDatos(String tipoDNI, String numeroDNI, String apellido, String nombre)
 	{
 		try {
 			this.numeroDNI = Integer.parseInt(numeroDNI);
 			this.tipoDNI = sanitize(tipoDNI);
 			this.apellido = sanitize(apellido);
 			this.nombre = sanitize(nombre);
-			wizardWindow1.setVisible(false);
-			wizardWindow2.setVisible(true);
+			return true;
 		}
 		catch (NumberFormatException ne)
 		{
@@ -98,9 +108,10 @@ public class Alta_Medicos extends FeatureTemplate
 		{
 			wizardWindow1.setTitle(" -- ERROR: Complete Todos los Campos -- ");
 		}
+		return false;
 	}
 
-	private String sanitize(String string)
+	protected String sanitize(String string)
 	throws SQLInjectionAttemptException,
 		   NullStringException
 	{
@@ -133,6 +144,9 @@ public class Alta_Medicos extends FeatureTemplate
 	    System.out.println();
 	    System.out.println("---");
 	    System.out.println();
+	    
+	    wizardWindow1.dispose();
+		wizardWindow2.dispose();
 	}
 	
 	public void cancelar()
@@ -186,6 +200,14 @@ public class Alta_Medicos extends FeatureTemplate
 			wizardWindow2.setTitle(" -- ERROR: Debe Seleccionar Una Especialidad --");
 		}
 	}
+	
+	public void loadData_TipoDoc(){}
+	
+	public void loadData_NumDoc(){}
+	
+	public void loadData_Apellido(){}
+	
+	public void loadData_Nombre(){}	
 }
 
 

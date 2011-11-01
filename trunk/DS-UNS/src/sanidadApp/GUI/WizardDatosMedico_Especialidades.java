@@ -27,7 +27,7 @@ import sanidadApp.Features.TablaEspecialidades;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 @SuppressWarnings("serial")
-public class WizardDatosMedico_2 extends JDialog
+public class WizardDatosMedico_Especialidades extends JDialog
 {
 	private JLabel jLabelEspecialidadesPoseidas;
 	private JLabel jLabelEspecialidadesExistentes;
@@ -48,12 +48,12 @@ public class WizardDatosMedico_2 extends JDialog
 		return control;
 	}
 
-	public WizardDatosMedico_2(Alta_Medicos control){
+	public WizardDatosMedico_Especialidades(Alta_Medicos control){
 		this.control = control;
 		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter() {
 			    public void windowClosing(WindowEvent we) {
-			    	(((WizardDatosMedico_2) we.getWindow()).getControl()).cancelar();
+			    	(((WizardDatosMedico_Especialidades) we.getWindow()).getControl()).cancelar();
 			    }
 			});
 		this.setModalityType(ModalityType.APPLICATION_MODAL);

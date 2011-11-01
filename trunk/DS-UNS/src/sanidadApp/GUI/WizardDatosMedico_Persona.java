@@ -29,7 +29,7 @@ import sanidadApp.Features.Alta_Medicos;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 @SuppressWarnings("serial")
-public class WizardDatosMedico_1 extends JDialog
+public class WizardDatosMedico_Persona extends JDialog
 {
 	private JComboBox jComboBoxTipoDNI;
 	private JLabel jLabelTipoDNI;
@@ -48,12 +48,12 @@ public class WizardDatosMedico_1 extends JDialog
 		return control;
 	}
 
-	public WizardDatosMedico_1(Alta_Medicos control){
+	public WizardDatosMedico_Persona(Alta_Medicos control){
 		this.control = control;
 		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter() {
 			    public void windowClosing(WindowEvent we) {
-			    	(((WizardDatosMedico_1) we.getWindow()).getControl()).cancelar();
+			    	(((WizardDatosMedico_Persona) we.getWindow()).getControl()).cancelar();
 			    }
 			});
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
@@ -81,7 +81,7 @@ public class WizardDatosMedico_1 extends JDialog
 				{
 					jLabelTipoDNI = new JLabel();
 					getContentPane().add(jLabelTipoDNI);
-					jLabelTipoDNI.setText("Tipo DNI");
+					jLabelTipoDNI.setText("Tipo Doc.");
 					jLabelTipoDNI.setBounds(25, 23, 71, 14);
 				}
 				{
@@ -92,7 +92,7 @@ public class WizardDatosMedico_1 extends JDialog
 				{
 					jLabelNumeroDNI = new JLabel();
 					getContentPane().add(jLabelNumeroDNI);
-					jLabelNumeroDNI.setText("Numero DNI");
+					jLabelNumeroDNI.setText("Numero Doc.");
 					jLabelNumeroDNI.setBounds(108, 23, 89, 14);
 				}
 				{
