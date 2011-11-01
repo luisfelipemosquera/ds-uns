@@ -7,6 +7,7 @@ import sMySQLappTemplate.Core.Command;
 import sMySQLappTemplate.Core.FeatureTemplate;
 import sMySQLappTemplate.Exceptions.InvalidButtonLocation;
 import sanidadApp.Features.Alta_Medicos;
+import sanidadApp.Features.Eliminacion_Medicos;
 import sanidadApp.Features.Modificacion_Medicos;
 import sanidadApp.GUI.MainWindowSanidad;
 
@@ -16,6 +17,7 @@ public class sanidadAppCore extends AppCoreTemplate
 	
 	FeatureTemplate altaMedicos;
 	FeatureTemplate modificacionMedicos;
+	FeatureTemplate eliminacionMedicos;
 	
 	public sanidadAppCore()
 	{
@@ -33,6 +35,7 @@ public class sanidadAppCore extends AppCoreTemplate
 		
 		altaMedicos = new Alta_Medicos(this);
 		modificacionMedicos = new Modificacion_Medicos(this);
+		eliminacionMedicos = new Eliminacion_Medicos(this);
 		
 	}
 
