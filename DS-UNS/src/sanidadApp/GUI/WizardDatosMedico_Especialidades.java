@@ -62,7 +62,8 @@ public class WizardDatosMedico_Especialidades extends JDialog
 		initGUI();
 		this.pack();
 		this.setSize(400, 320);
-		this.setLocationRelativeTo(null);	
+		this.setLocationRelativeTo(null);
+		this.setResizable(false);
 	}
 
 	protected void initGUI() 

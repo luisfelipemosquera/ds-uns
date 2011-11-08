@@ -63,6 +63,7 @@ public class WizardDatosMedico_Persona extends JDialog
 		this.pack();
 		this.setSize(400, 320);
 		this.setLocationRelativeTo(null);
+		this.setResizable(false);
 	}
 
 	protected void initGUI() {
