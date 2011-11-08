@@ -57,6 +57,7 @@ public class WizardDatosMedico_Seleccionar extends JDialog
 		this.pack();
 		this.setSize(400, 320);
 		this.setLocationRelativeTo(null);
+		this.setResizable(false);
 		this.setTitle("Seleccion de Medico");
 	}
 
