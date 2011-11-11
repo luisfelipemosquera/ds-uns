@@ -8,19 +8,24 @@ import sMySQLappTemplate.Core.FeatureTemplate;
 import sMySQLappTemplate.Exceptions.InvalidButtonLocation;
 import sanidadApp.Features.Alta_Medicos;
 import sanidadApp.Features.Alta_Turnos;
+import sanidadApp.Features.Cancelacion_Turno;
 import sanidadApp.Features.Eliminacion_Medicos;
 import sanidadApp.Features.Modificacion_Medicos;
+import sanidadApp.Features.Otorgar_Turno;
 import sanidadApp.GUI.MainWindowSanidad;
 
 public class sanidadAppCore extends AppCoreTemplate 
 {
 	protected MainWindowSanidad masterWindow;
 	
+	protected FeatureTemplate otorgarTurno;
+	
 	protected FeatureTemplate altaMedicos;
 	protected FeatureTemplate modificacionMedicos;
 	protected FeatureTemplate eliminacionMedicos;
 	
 	protected FeatureTemplate altaTurnos;
+	protected FeatureTemplate cancelacionTurnos;
 	
 	
 	protected TablaTurnos turnsData;
@@ -39,11 +44,14 @@ public class sanidadAppCore extends AppCoreTemplate
 	protected void initFeatures() {
 		// TODO Auto-generated method stub
 		
+		otorgarTurno = new Otorgar_Turno(this);
+		
 		altaMedicos = new Alta_Medicos(this);
 		modificacionMedicos = new Modificacion_Medicos(this);
 		eliminacionMedicos = new Eliminacion_Medicos(this);
 		
-		altaTurnos = new Alta_Turnos(this);		
+		altaTurnos = new Alta_Turnos(this);	
+		cancelacionTurnos = new Cancelacion_Turno(this);
 	}
 
 	@Override
@@ -71,5 +79,10 @@ public class sanidadAppCore extends AppCoreTemplate
 	private void actualizarTurnData() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public int getSelectedTurno() 
+	{
+		return masterWindow.getTablaPrincipalSelectedRow();
 	}
 }
