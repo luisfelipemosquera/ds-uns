@@ -15,7 +15,7 @@ public class Alta_Turnos extends FeatureTemplate
 	public Alta_Turnos(sanidadAppCore app)
 	{
 		this.appCore = app;
-		app.registerButtonForTools(new GestionTurnos(this), "/images/MedicTurn64.png", "Nuevo Turno");
+		app.registerButtonForTools(new GestionTurnos(this), "/images/MedicTurn64_add.png", "Nuevo Turno");
 	}	
 
 	protected class GestionTurnos extends Command

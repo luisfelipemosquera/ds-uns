@@ -14,13 +14,16 @@ import sanidadApp.GUI.MainWindowSanidad;
 
 public class sanidadAppCore extends AppCoreTemplate 
 {
-	MainWindowSanidad masterWindow;
+	protected MainWindowSanidad masterWindow;
 	
-	FeatureTemplate altaMedicos;
-	FeatureTemplate modificacionMedicos;
-	FeatureTemplate eliminacionMedicos;
+	protected FeatureTemplate altaMedicos;
+	protected FeatureTemplate modificacionMedicos;
+	protected FeatureTemplate eliminacionMedicos;
 	
-	FeatureTemplate altaTurnos;
+	protected FeatureTemplate altaTurnos;
+	
+	
+	protected TablaTurnos turnsData;
 	
 	public sanidadAppCore()
 	{
@@ -47,8 +50,11 @@ public class sanidadAppCore extends AppCoreTemplate
 	protected void initGUI() {
 		// TODO Auto-generated method stub
 		masterWindow = new MainWindowSanidad(this);
+		turnsData = new TablaTurnos();
+		actualizarTurnData();
+		masterWindow.setTablaPrincipal(turnsData);
 	}
-	
+
 	// METODOS PARA REGISTRA BOTONES
 	
 	@SuppressWarnings("unchecked")
@@ -62,4 +68,8 @@ public class sanidadAppCore extends AppCoreTemplate
 		}
 	}
 
+	private void actualizarTurnData() {
+		// TODO Auto-generated method stub
+		
+	}
 }

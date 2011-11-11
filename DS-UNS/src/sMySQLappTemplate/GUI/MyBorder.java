@@ -1,5 +1,6 @@
 package sMySQLappTemplate.GUI;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Insets;
@@ -15,6 +16,11 @@ public class MyBorder extends MyRoundBorder
 	{
 		super(dist);
 		this.title = title;
+	}
+	
+	public MyBorder(int dist, Color color) 
+	{
+		super(dist, color);
 	}
 	
 	public Insets getBorderInsets(Component component) 

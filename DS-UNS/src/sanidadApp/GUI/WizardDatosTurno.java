@@ -73,7 +73,7 @@ public class WizardDatosTurno extends JDialog
 		this.getContentPane().setLayout(null);
 		initGUI();
 		this.pack();
-		this.setSize(586, 473);
+		this.setSize(586, 470);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 	}
