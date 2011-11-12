@@ -1,6 +1,8 @@
 package sanidadApp.Features;
 
 
+import java.sql.SQLException;
+
 import javax.swing.JOptionPane;
 
 import sMySQLappTemplate.Core.Command;
@@ -10,12 +12,6 @@ import sanidadApp.GUI.WizardDatosMedico_Seleccionar;
 
 public class Eliminacion_Medicos extends Modificacion_Medicos 
 {
-	protected WizardDatosMedico_Seleccionar wizardWindow0;
-	
-	protected TablaMedicos TablaMedicosExistentes;
-	
-	protected int medico;
-
 	public Eliminacion_Medicos(sanidadAppCore app) 
 	{	
 		this.appCore = app;
@@ -32,29 +28,13 @@ public class Eliminacion_Medicos extends Modificacion_Medicos
 		@Override
 		public Object ExecCommand(Object... args)
 		{
-			/*
-			try {
-				today = (Date)appCore.getValue("SELECT CURDATE();");
-			} catch (SQLException e) {
-				// TODO	JOptionPane.showMessageDialog(null, "Se produjo un Error al intentar consultar la fecha actual", "- ERROR MOLESTO -", JOptionPane.ERROR_MESSAGE);
-				e.printStackTrace();
-				return null;
-			}
-			*/
-			
 			TablaMedicosExistentes = new TablaMedicos();
 			
 			wizardWindow0 = new WizardDatosMedico_Seleccionar((Eliminacion_Medicos)this.receiver);			
 			
 			wizardWindow0.setSigButtonText("Finalizar");
 									
-			// Datos de Prueba
-			TablaMedicosExistentes.setRowCount(1);
-			TablaMedicosExistentes.setValueAt("Gonzalez", 0, 0);
-			TablaMedicosExistentes.setValueAt("Juan Domingo", 0, 1);
-			TablaMedicosExistentes.setValueAt("LE", 0, 2);
-			TablaMedicosExistentes.setValueAt("31298030", 0, 3);
-			// Fin Datos de Prueba			
+			loadMedicos();		
 			
 			wizardWindow0.viewMedicos(TablaMedicosExistentes);			
 			wizardWindow0.setVisible(true);
@@ -87,20 +67,25 @@ public class Eliminacion_Medicos extends Modificacion_Medicos
 	@SuppressWarnings("static-access")
 	public void guardar()
 	{
-		JOptionPane confirm = new JOptionPane();
-		int res = confirm.showConfirmDialog(null, "Esta seguro que desea eliminar al medico " + apellido);
+		JOptionPane contingencia = new JOptionPane();
+		int res = contingencia.showConfirmDialog(null, "Esta seguro que desea eliminar al medico " + apellido);
 		if (res == JOptionPane.YES_OPTION)
 		{
-			// Debug Prints
-			System.out.println("Eliminando Entrada Para Medico:");
-			System.out.println("-- Comienzo de Entrada --"); 
-			System.out.println("Tipo DNI: " + tipoDoc);
-			System.out.println("Numero DNI: " + numeroDoc);
-			System.out.println("Apellido: " + apellido);
-			System.out.println("Nombres: " + nombre);
-		    System.out.println("-- Fin de Entrada --"); 
-		    System.out.println();
-		    wizardWindow0.dispose();
+			String SQLQueryEliminarMedico =
+				"DELETE FROM Medico WHERE " +
+				"	Doc_Tipo = '" + tipoDoc + "' AND" +
+				"	Doc_Numero = " + numeroDoc + ";";
+			try {
+				appCore.sendCommand(SQLQueryEliminarMedico);
+				
+			} catch (SQLException e) {
+				contingencia.showMessageDialog(	
+						null, e.getMessage(), 
+						"ERROR: " + e.getErrorCode(), 
+						JOptionPane.ERROR_MESSAGE
+				);
+			}
+			wizardWindow0.dispose();
 		}
 		else if (res == JOptionPane.CANCEL_OPTION)
 		{

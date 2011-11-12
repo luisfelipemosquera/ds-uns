@@ -24,15 +24,16 @@ public abstract class AppCoreTemplate
 	
 	protected int loginAttemps = 3;
 	
+	protected ConnectionCfg defaultConnection;
+	
 	// CONTRUCTOR DE CLASE ABSTRACTA :P
 	
 	protected AppCoreTemplate()
 	{
 		this.comLink = new ComModule();		
 		
-		ConnectionCfg defaultConnection = null;
 		try {
-			defaultConnection = new ConnectionCfg("localhost", "3306", "mydb");
+			defaultConnection = new ConnectionCfg("localhost", "3306", "sanidad-db");
 		} catch (Exception e) 
 		{	
 			System.out.println(e.getMessage());
@@ -41,7 +42,7 @@ public abstract class AppCoreTemplate
 		
 		new LoginWindow(this, defaultConnection);
 		
-		//if (!comLink.isConnectionEstablished()) System.exit(2);
+		if (!comLink.isConnectionEstablished()) System.exit(2);
 		
 		this.initData();
 		this.initGUI();
@@ -68,7 +69,6 @@ public abstract class AppCoreTemplate
 	public void TryLogin(UserAccount who, ConnectionCfg where) 
 	throws InvalidUserOrPass, InvalidPortNumber, InvalidHost, InvalidDataBase
 	{	
-		/*
 		if (loginAttemps > 1)
 		{
 			try
@@ -86,7 +86,6 @@ public abstract class AppCoreTemplate
 			// TODO mensaje autentification fail			
 			System.exit(1);						
 		}
-		*/
 	}	
 	
 	protected abstract void initData();

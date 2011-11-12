@@ -106,13 +106,14 @@ public class ComModule
 			connTest = dataSource.getConnection();
 			this.connEstablished = true;
 		} catch (org.apache.commons.dbcp.SQLNestedException e) {
-			// TODO cartelito de falla de conexion
-			e.printStackTrace();
-		} catch (Exception f) {			
-			f.printStackTrace();
 			this.closeConn(connTest);
 			this.connEstablished = false;
 			throw new InvalidUserOrPass();
+		} catch (Exception f) {
+			// TODO cartelito de falla de conexion
+			f.printStackTrace();
+			this.closeConn(connTest);
+			this.connEstablished = false;
 		}
 	}
 	
