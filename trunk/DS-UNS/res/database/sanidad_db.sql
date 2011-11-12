@@ -57,13 +57,13 @@ CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Persona` (
   CONSTRAINT `fk_Persona_Doc_Tipo`
     FOREIGN KEY (`Doc_Tipo` )
     REFERENCES `sanidad-db`.`Doc_Tipo` (`Tipo` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
   CONSTRAINT `fk_Persona_UNS_Relacion1`
     FOREIGN KEY (`UNS_Relacion_Relacion` )
     REFERENCES `sanidad-db`.`UNS_Relacion` (`Relacion` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -101,8 +101,8 @@ CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Consulta` (
   CONSTRAINT `fk_Consulta_Paciente1`
     FOREIGN KEY (`Paciente_Doc_Tipo` , `Paciente_Doc_Numero` )
     REFERENCES `sanidad-db`.`Paciente` (`Doc_Tipo` , `Doc_Numero` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -219,8 +219,8 @@ CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Especializa` (
   CONSTRAINT `fk_Medico_has_Especialidad_Especialidad1`
     FOREIGN KEY (`Especialidad_Nombre` )
     REFERENCES `sanidad-db`.`Especialidad` (`Nombre` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -230,7 +230,7 @@ ENGINE = InnoDB;
 CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Turno` (
   `ID` INT NOT NULL AUTO_INCREMENT ,
   `FechaHoraInicio` DATETIME NOT NULL ,
-  `Duracion` MEDIUMTEXT  NOT NULL ,
+  `FechaHoraFin` DATETIME NOT NULL ,
   `Medico_Doc_Tipo` VARCHAR(20) NOT NULL ,
   `Medico_Doc_Numero` INT NOT NULL ,
   `Especialidad_Nombre` VARCHAR(45) NOT NULL ,
@@ -255,20 +255,20 @@ CREATE  TABLE IF NOT EXISTS `sanidad-db`.`IntraConsulta` (
   CONSTRAINT `fk_IntraConsulta_Consulta1`
     FOREIGN KEY (`Consulta_ID` )
     REFERENCES `sanidad-db`.`Consulta` (`ID` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
   CONSTRAINT `fk_IntraConsulta_Turno1`
     FOREIGN KEY (`Turno_ID` )
     REFERENCES `sanidad-db`.`Turno` (`ID` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `sanidad-db`.`Realizar`
+-- Table `sanidad-db`.`Realiza`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Realizar` (
+CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Realiza` (
   `Especialidad_Nombre` VARCHAR(45) NOT NULL ,
   `Tipo_Consulta_Nombre` VARCHAR(45) NOT NULL ,
   PRIMARY KEY (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) ,
@@ -404,26 +404,16 @@ INSERT INTO `sanidad-db`.`Especializa` (`Medico_Doc_Tipo`, `Medico_Doc_Numero`, 
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table `sanidad-db`.`Realizar`
+-- Data for table `sanidad-db`.`Realiza`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `sanidad-db`;
-INSERT INTO `sanidad-db`.`Realizar` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Clínica', 'Clínica_Médica');
-INSERT INTO `sanidad-db`.`Realizar` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Traumatología', 'Traumatología');
-INSERT INTO `sanidad-db`.`Realizar` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Cirugía_General', 'Clínica_Quirúrgica');
-INSERT INTO `sanidad-db`.`Realizar` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Psiquiatría', 'Psiquiatría');
-INSERT INTO `sanidad-db`.`Realizar` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Ginecología', 'Ginecología');
-INSERT INTO `sanidad-db`.`Realizar` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Odontología', 'Odontología');
-INSERT INTO `sanidad-db`.`Realizar` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Enfermería', 'Enfermería');
+INSERT INTO `sanidad-db`.`Realiza` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Clínica', 'Clínica_Médica');
+INSERT INTO `sanidad-db`.`Realiza` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Traumatología', 'Traumatología');
+INSERT INTO `sanidad-db`.`Realiza` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Cirugía_General', 'Clínica_Quirúrgica');
+INSERT INTO `sanidad-db`.`Realiza` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Psiquiatría', 'Psiquiatría');
+INSERT INTO `sanidad-db`.`Realiza` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Ginecología', 'Ginecología');
+INSERT INTO `sanidad-db`.`Realiza` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Odontología', 'Odontología');
+INSERT INTO `sanidad-db`.`Realiza` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Enfermería', 'Enfermería');
 
 COMMIT;
-
--- -----------------------------------------------------
--- USUARIOS
--- -----------------------------------------------------
-
-CREATE USER 'sadmin'@'%' IDENTIFIED BY  'sadmin';
-GRANT ALL PRIVILEGES ON  `sanidad-db`.* TO  'sadmin'@'%';
-
-CREATE USER 'sadmin'@'localhost' IDENTIFIED BY  'sadmin';
-GRANT ALL PRIVILEGES ON  `sanidad-db`.* TO  'sadmin'@'localhost';
