@@ -1,6 +1,10 @@
 package sanidadApp.Features;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.swing.JOptionPane;
 
@@ -21,7 +25,9 @@ public class Alta_Turnos extends FeatureTemplate
 	// Datos de turno
 	private String docType;
 	private String docNumber;
-	private String tipoConsulta;
+	
+	private String fechaHoraInicio;
+	private String fechaHoraFin;
 	
 	public Alta_Turnos(sanidadAppCore app)
 	{
@@ -48,10 +54,9 @@ public class Alta_Turnos extends FeatureTemplate
 			loadMedicos(); 					
 			
 			wizardWindow1 = new WizardDatosTurno_Medico((Alta_Turnos)this.receiver);
-			wizardWindow1.setTitle("Nuevo Turno: Medico y Tipo de Consulta");
+			wizardWindow1.setTitle("Nuevo Turno: Medico");
 			
 			wizardWindow1.viewMedicos(TablaMedicosExistentes);
-			wizardWindow1.viewTiposConsulta(tablaTiposConsulta);
 			
 			wizardWindow2 = new WizardDatosTurno_Fecha((Alta_Turnos)this.receiver);
 			wizardWindow2.setTitle("Nuevo Turno: Fecha, Hora y Duración");
@@ -61,9 +66,9 @@ public class Alta_Turnos extends FeatureTemplate
 		}		
 	}
 	
-	public void siguiente(int tipoConsultaSeleccionada) 
+	public void siguiente() 
 	{
-		wizardWindow1.setTitle("Nuevo Turno: Medico y Tipo de Consulta");
+		wizardWindow1.setTitle("Nuevo Turno: Medico");
 		wizardWindow2.setTitle("Nuevo Turno: Fecha, Hora y Duración");
 		
 		if(docType.isEmpty() || docNumber.isEmpty())
@@ -71,12 +76,7 @@ public class Alta_Turnos extends FeatureTemplate
 			wizardWindow1.setTitle("ERROR: Debe seleccionar un medico");
 			return;
 		}
-		if(tipoConsultaSeleccionada < 0)
-		{
-			wizardWindow1.setTitle("ERROR: Debe elegir un tipo de consulta para el turno");
-			return;
-		}
-		tipoConsulta = tablaTiposConsulta.getValueAt(tipoConsultaSeleccionada, 0).toString();
+		
 		wizardWindow1.setVisible(false);
 		wizardWindow2.setVisible(true);
 
@@ -84,18 +84,70 @@ public class Alta_Turnos extends FeatureTemplate
 	
 	public void anterior() 
 	{
-		wizardWindow1.setTitle("Nuevo Turno: Medico y Tipo de Consulta");
+		wizardWindow1.setTitle("Nuevo Turno: Medico");
 		wizardWindow2.setTitle("Nuevo Turno: Fecha, Hora y Duración");
 		
 		wizardWindow2.setVisible(false);
 		wizardWindow1.setVisible(true);		
 	}
 	
-	public void guardar()
+	/*
+	 * ((" +
+			"   '" + fechaHoraInicio + "' <= Turno.FechaHoraFin AND" +
+			"   '" + fechaHoraInicio + "' >= Turno.FechaHoraInicio ) OR (" +
+			"   '" + fechaHoraFin + "' >= Turno.FechaHoraInicio";
+	 */
+	
+	@SuppressWarnings("static-access")
+	public void guardar(Date date, GregorianCalendar calendar, int duracion)
 	{
-		System.out.println("Guardando...");
-		wizardWindow1.dispose(); 
-		wizardWindow2.dispose();
+		JOptionPane contingencia = new JOptionPane();
+		
+		calcularFechaHoraInicio(date, calendar);
+		if (this.fechaHoraInicio == null) return;
+		
+		try {
+			calcularFechaHoraFin(duracion);
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
+		String SQLquerySuperposicion =
+			"SELECT * FROM Turno " +
+			"  WHERE Turno.Medico_Doc_Tipo = '" + this.docType + "' AND" +
+			"        Turno.Medico_Doc_Numero = " + this.docNumber + " AND " +
+			"(('" + fechaHoraInicio + "' BETWEEN Turno.FechaHoraInicio AND Turno.FechaHoraFin) OR" +
+			"('"  + fechaHoraFin + "' BETWEEN Turno.FechaHoraInicio AND Turno.FechaHorafin) OR" +
+			"('"  + fechaHoraInicio + "' <= Turno.FechaHoraInicio AND '" + fechaHoraFin + "' >= Turno.FechaHoraFin))";
+		
+		try {
+			if (appCore.getValue(SQLquerySuperposicion) != null)
+			{
+				contingencia.showMessageDialog(	
+						null, "El medico ya tiene un compromiso en ese momento", 
+						"ERROR", 
+						JOptionPane.ERROR_MESSAGE
+				);
+			}
+			else
+			{
+				String SQLqueryInsert =
+					"INSERT INTO Turno (FechaHoraInicio, FechaHoraFin, " +
+					"                   Medico_Doc_Tipo, Medico_Doc_Numero) " +
+					"       VALUES ('" + fechaHoraInicio + "', '" + fechaHoraFin + "', " +
+					"               '" + docType + "', " + docNumber + ");";
+				appCore.sendCommand(SQLqueryInsert);
+				
+				wizardWindow1.dispose();
+				wizardWindow2.dispose();
+			}
+		} catch (SQLException e) {
+			contingencia.showMessageDialog(	
+					null, e.getMessage(), 
+					"ERROR: " + e.getErrorCode(), 
+					JOptionPane.ERROR_MESSAGE
+			);
+		} 
 	}
 	
 	public void cancelar()
@@ -116,6 +168,7 @@ public class Alta_Turnos extends FeatureTemplate
 		}		
 	}
 	
+	/*
 	private void loadTipoConsulta() {
 		String SQLquery = "SELECT DISTINCT Tipo_Consulta_Nombre" +
 						  "	 FROM Realiza" +
@@ -132,13 +185,40 @@ public class Alta_Turnos extends FeatureTemplate
 			e.printStackTrace();
 		}		
 	}
+	*/
 	
 	public void medico_seleccionado(int medic)
 	{
 		docType = TablaMedicosExistentes.getValueAt(medic, 2).toString();
 		docNumber = TablaMedicosExistentes.getValueAt(medic, 3).toString();
-		
-		loadTipoConsulta();
+	}
+
+	public void calcularFechaHoraInicio(Date date, GregorianCalendar calendar) 
+	{
+		String dateTime = null;
+		if (date == null)
+		{
+			wizardWindow2.setTitle("ERROR: Debe seleccionar una fecha para el turno");
+		}
+		else
+		{		
+			SimpleDateFormat transformerDate = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat transformerTime = new SimpleDateFormat("HH:mm:ss");
+			dateTime = transformerDate.format(date) + " " + 
+					   transformerTime.format(calendar.getTime());
+		}		
+		this.fechaHoraInicio = dateTime;
+	}
+	
+	public void calcularFechaHoraFin(int duracion) 
+	throws SQLException
+	{
+		String SQLquerySumarTiempo = 
+			"SELECT DATE_FORMAT(" +
+			"  DATE_ADD('" + fechaHoraInicio + "', INTERVAL " + duracion + " MINUTE)," +
+			"  '%Y-%m-%d %T');";
+
+		fechaHoraFin = appCore.getValue(SQLquerySumarTiempo).toString();
 	}
 }
 
