@@ -64,7 +64,7 @@ public class MyTable extends JTable
 		else if(row == rollOverRowIndex) 
 		{
 			c.setForeground(Color.DARK_GRAY);
-			c.setBackground(Color.CYAN);
+			c.setBackground(Color.GREEN);
 		}
 		else
 		{

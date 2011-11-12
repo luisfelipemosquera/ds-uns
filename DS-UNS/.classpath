@@ -8,6 +8,9 @@
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.16-bin.jar"/>
 	<classpathentry kind="lib" path="lib/synthetica.jar"/>
 	<classpathentry kind="lib" path="lib/syntheticaSimple2D.jar"/>
+	<classpathentry kind="lib" path="lib/microba-0.4.4.3-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/microba-0.4.4.3-sources.jar"/>
+	<classpathentry kind="lib" path="lib/microba-0.4.4.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
