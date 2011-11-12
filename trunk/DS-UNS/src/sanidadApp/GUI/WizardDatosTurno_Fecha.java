@@ -12,6 +12,7 @@ import javax.swing.JComboBox;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
@@ -24,6 +25,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.lavantech.gui.comp.TimePanel;
 import com.michaelbaranov.microba.calendar.CalendarPane;
 
 import sMySQLappTemplate.GUI.MyTable;
@@ -49,6 +51,7 @@ import sanidadApp.Features.TablaTiposConsulta;
 public class WizardDatosTurno_Fecha extends JDialog
 {	
 	private Alta_Turnos control;
+	private JScrollPane jScrollPaneClock;
 	private JButton jButtonAnterior;
 	private JScrollPane jScrollPaneFecha;
 	private JButton jButtoncancelar;
@@ -58,7 +61,8 @@ public class WizardDatosTurno_Fecha extends JDialog
 	private JLabel jLabelDuracion;
 	private JLabel jLabelFechaInicio;
 	private JLabel jLabelHoraInicio;
-	CalendarPane datePicker;
+	CalendarPane datePicker;	
+	TimePanel timePiker;
 
 	public Alta_Turnos getControl() {
 		return control;
@@ -95,18 +99,18 @@ public class WizardDatosTurno_Fecha extends JDialog
 			jLabelHoraInicio = new JLabel();
 			getContentPane().add(jLabelHoraInicio);
 			jLabelHoraInicio.setText("Hora del Turno");
-			jLabelHoraInicio.setBounds(372, 40, 124, 16);
+			jLabelHoraInicio.setBounds(372, 18, 124, 16);
 		}
 		{
 			jLabelDuracion = new JLabel();
 			getContentPane().add(jLabelDuracion);
 			jLabelDuracion.setText("Duracion");
-			jLabelDuracion.setBounds(372, 260, 110, 16);
+			jLabelDuracion.setBounds(362, 266, 110, 16);
 		}
 		{
 			jSliderDuracion = new JSlider();
 			getContentPane().add(jSliderDuracion);
-			jSliderDuracion.setBounds(372, 288, 173, 22);
+			jSliderDuracion.setBounds(361, 288, 184, 22);
 			jSliderDuracion.setMaximum(16);
 			jSliderDuracion.setMinimum(1);
 			jSliderDuracion.setMinorTickSpacing(1);
@@ -122,7 +126,7 @@ public class WizardDatosTurno_Fecha extends JDialog
 			jLabelDuracionElegida = new JLabel();
 			getContentPane().add(jLabelDuracionElegida);
 			jLabelDuracionElegida.setText("15 minutos");
-			jLabelDuracionElegida.setBounds(420, 260, 66, 16);
+			jLabelDuracionElegida.setBounds(407, 266, 66, 16);
 			jLabelDuracionElegida.setHorizontalTextPosition(JLabel.RIGHT);
 		}
 		{
@@ -151,6 +155,8 @@ public class WizardDatosTurno_Fecha extends JDialog
 			jScrollPaneFecha = new JScrollPane();
 			getContentPane().add(jScrollPaneFecha);
 			jScrollPaneFecha.setBounds(26, 40, 316, 270);
+			jScrollPaneFecha.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			jScrollPaneFecha.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		}
 		{
 			jButtonAnterior = new JButton();
@@ -164,10 +170,25 @@ public class WizardDatosTurno_Fecha extends JDialog
 			});
 		}
 		{
+			jScrollPaneClock = new JScrollPane();
+			getContentPane().add(jScrollPaneClock);
+			jScrollPaneClock.setBounds(361, 40, 184, 214);
+			jScrollPaneClock.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			jScrollPaneClock.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		}
+		{
 			datePicker = new CalendarPane();
 			datePicker.setEnabled(true);
 			datePicker.setVisible(true);
 			jScrollPaneFecha.setViewportView(datePicker);
+			datePicker.setPreferredSize(new java.awt.Dimension(299, 267));
 		}
+		{
+			timePiker = new TimePanel();
+			timePiker.setEnabled(true);
+			timePiker.setVisible(true);
+			jScrollPaneClock.setViewportView(timePiker);
+		}
+		
 	}
 }
