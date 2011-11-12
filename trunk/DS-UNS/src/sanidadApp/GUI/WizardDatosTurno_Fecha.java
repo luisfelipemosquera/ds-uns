@@ -135,8 +135,11 @@ public class WizardDatosTurno_Fecha extends JDialog
 			jButtonAceptar.setText("Aceptar");
 			jButtonAceptar.setBounds(464, 386, 81, 23);
 			jButtonAceptar.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					control.guardar();
+				public void actionPerformed(ActionEvent evt) 
+				{					
+					control.guardar(datePicker.getDate(), 
+							        timePiker.getCalendar(),
+							        jSliderDuracion.getValue()*15);
 				}
 			});
 		}

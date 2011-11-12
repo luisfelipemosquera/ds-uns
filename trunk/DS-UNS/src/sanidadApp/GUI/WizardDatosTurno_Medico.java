@@ -55,7 +55,6 @@ public class WizardDatosTurno_Medico extends JDialog
 	private JScrollPane jScrollPaneMedicos;
 	
 	private MyTable tablaMedicos;
-	private MyTable tablaTiposConsulta;
 	
 	private boolean click;
 
@@ -88,26 +87,14 @@ public class WizardDatosTurno_Medico extends JDialog
 		{
 			jScrollPaneMedicos = new JScrollPane();
 			getContentPane().add(jScrollPaneMedicos);
-			jScrollPaneMedicos.setBounds(24, 33, 334, 310);
-		}
-		{
-			jScrollPaneTipoConsulta = new JScrollPane();
-			getContentPane().add(jScrollPaneTipoConsulta);
-			jScrollPaneTipoConsulta.setBounds(392, 33, 178, 310);
+			jScrollPaneMedicos.setBounds(24, 33, 546, 310);
 		}
 		{
 			jLabelMedicos = new JLabel();
 			getContentPane().add(jLabelMedicos);
-			jLabelMedicos.setText("Medico");
+			jLabelMedicos.setText("Medicos");
 			jLabelMedicos.setBounds(24, 12, 105, 16);
 		}
-		{
-			jLabelTipoConsulta = new JLabel();
-			getContentPane().add(jLabelTipoConsulta);
-			jLabelTipoConsulta.setText("Tipo de Consulta");
-			jLabelTipoConsulta.setBounds(392, 12, 136, 16);
-		}
-
 		{
 			jButtonSiguiente = new JButton();
 			getContentPane().add(jButtonSiguiente);
@@ -115,7 +102,7 @@ public class WizardDatosTurno_Medico extends JDialog
 			jButtonSiguiente.setBounds(489, 395, 81, 23);
 			jButtonSiguiente.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
-					control.siguiente(tablaTiposConsulta.getSelectedRow());
+					control.siguiente();
 				}
 			});
 		}
@@ -146,13 +133,6 @@ public class WizardDatosTurno_Medico extends JDialog
 			}
 		});
 		jScrollPaneMedicos.setViewportView(tablaMedicos);
-		tablaMedicos.setPreferredSize(new java.awt.Dimension(331, 306));
-	}
-	
-	public void viewTiposConsulta(TablaTiposConsulta te)
-	{
-		tablaTiposConsulta = new MyTable(te);
-		jScrollPaneTipoConsulta.setViewportView(tablaTiposConsulta);
-		tablaTiposConsulta.setPreferredSize(new java.awt.Dimension(175, 307));
+		tablaMedicos.setPreferredSize(new java.awt.Dimension(532, 307));
 	}
 }
