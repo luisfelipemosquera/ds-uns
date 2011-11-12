@@ -1,12 +1,14 @@
 package sanidadApp.Features;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 import com.mysql.jdbc.RowData;
 
@@ -55,15 +57,6 @@ public class Alta_Medicos extends FeatureTemplate
 		@Override
 		public Object ExecCommand(Object... args)
 		{
-			/*
-			try {
-				today = (Date)appCore.getValue("SELECT CURDATE();");
-			} catch (SQLException e) {
-				// TODO	JOptionPane.showMessageDialog(null, "Se produjo un Error al intentar consultar la fecha actual", "- ERROR MOLESTO -", JOptionPane.ERROR_MESSAGE);
-				e.printStackTrace();
-				return null;
-			}
-			*/
 			cambioEspecialidades = new HashMap<String, String>();
 			tablaEspExistentes = new TablaEspecialidades();
 			tablaEspPoseidas = new TablaEspecialidades();
@@ -72,17 +65,8 @@ public class Alta_Medicos extends FeatureTemplate
 			wizardWindow1 = new WizardDatosMedico_Persona((Alta_Medicos)this.receiver);
 			wizardWindow2 = new WizardDatosMedico_Especialidades((Alta_Medicos)this.receiver);
 			
-			// datos de prueba
-			tablaEspExistentes.setRowCount(3);
-			tablaEspExistentes.setValueAt("Especialidad X", 0, 0);
-			tablaEspExistentes.setValueAt("Especialidad Y", 1, 0);
-			tablaEspExistentes.setValueAt("Especialidad Z", 2, 0);
-			
-			docTypes.addElement("DNI");
-			docTypes.addElement("LE");
-			docTypes.addElement("LC");
-			
-			// fin datos de prueba
+			loadEspecialidadesExistentes();
+			loadTiposDocumento();
 			
 			wizardWindow1.setDocTypeData(docTypes);
 			wizardWindow2.viewEspExistentes(tablaEspExistentes);
@@ -90,7 +74,7 @@ public class Alta_Medicos extends FeatureTemplate
 			wizardWindow1.setVisible(true);
 			
 			return null;
-		}		
+		}	
 	}
 	
 	public void siguiente(String tipoDNI, String numeroDNI, String apellido, String nombre)
@@ -101,7 +85,7 @@ public class Alta_Medicos extends FeatureTemplate
 			wizardWindow2.setVisible(true);
 		}
 	}
-	
+
 	protected boolean cargarDatos(String tipoDNI, String numeroDNI, String apellido, String nombre)
 	{
 		try {
@@ -144,25 +128,115 @@ public class Alta_Medicos extends FeatureTemplate
 	}
 	
 	public void guardar()
-	{
-		// Debug Prints
-		System.out.println("Creando Nueva Entrada Para Medico:");
-		System.out.println("-- Comienzo de Entrada --"); 
-		System.out.println("Tipo DNI: " + tipoDoc);
-		System.out.println("Numero DNI: " + numeroDoc);
-		System.out.println("Apellido: " + apellido);
-		System.out.println("Nombres: " + nombre);
-		System.out.println();
-		Iterator it = cambioEspecialidades.entrySet().iterator();
-	    while (it.hasNext()) {
-	        Map.Entry<String,String> pairs = (Map.Entry<String,String>)it.next();
-	        System.out.println(pairs.getValue() + " " + pairs.getKey());
-	    }
-	    System.out.println("-- Fin de Entrada --"); 
-	    System.out.println();
+	{		
+		createMedic();		
+		updateEspecialidades();
 	    
 	    wizardWindow1.dispose();
 		wizardWindow2.dispose();
+	}
+	
+	@SuppressWarnings({ "unchecked", "static-access" })
+	protected void updateEspecialidades()
+	{
+		JOptionPane contingencia = new JOptionPane();
+		
+		Iterator it = cambioEspecialidades.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry<String,String> pairs = (Map.Entry<String,String>)it.next();	         	        
+	        String SQLQueryUpdateEspecialidad = null;
+	        if (pairs.getValue() == "add")
+	        {
+	        	SQLQueryUpdateEspecialidad =
+	        		"INSERT INTO Especializa (`Medico_Doc_Tipo`, `Medico_Doc_Numero`, `Especialidad_Nombre`) " +
+	        		"VALUES ('" + tipoDoc + "'," + numeroDoc + ", '" + pairs.getKey() + "');";
+	        }
+	        else
+	        {
+	        	SQLQueryUpdateEspecialidad =
+	        		"DELETE FROM Especializa " +
+	        		"WHERE Medico_Doc_Tipo = '" + tipoDoc + "' AND " +
+	        	    "	   Medico_Doc_Numero = " + numeroDoc + " AND " +
+	        	    "      Especialidad_Nombre = '" + pairs.getKey() + "';";
+	        }
+	        try {
+				appCore.sendCommand(SQLQueryUpdateEspecialidad);
+			} catch (SQLException e) {
+				contingencia.showMessageDialog(	
+						null, e.getMessage(), 
+						"ERROR: " + e.getErrorCode(), 
+						JOptionPane.ERROR_MESSAGE
+				);
+			}
+	    }
+	}
+	
+	/*
+	 * 
+		int res = confirm.showConfirmDialog(null, "Esta seguro que desea eliminar al medico " + apellido);
+	 */
+	
+	@SuppressWarnings("static-access")
+	protected void createMedic()
+	{
+		JOptionPane contingencia = new JOptionPane();
+		
+		createPersona();
+		
+		// Crear medico a partir de la persona si es posible
+		String SQLQueryMedicoExiste = 
+			"SELECT * FROM Medico WHERE " +
+			"  Doc_Tipo = '" + tipoDoc + "' AND " +
+			"  Doc_Numero = " + numeroDoc + ";";
+		try {
+			if (appCore.getValue(SQLQueryMedicoExiste) != null)
+			{
+				contingencia.showMessageDialog (	
+						null, "Ya existe un medico con ese documento", 
+						"ERROR", JOptionPane.ERROR_MESSAGE
+				);
+			}
+			else
+			{
+				String SQLQueryMedico = 
+					"INSERT INTO Medico (`Doc_Tipo`, `Doc_Numero`) " +
+					"VALUES ('" + tipoDoc + "', " + numeroDoc + ");";
+				appCore.sendCommand(SQLQueryMedico);
+			}			  	
+		} catch (SQLException e) {
+			contingencia.showMessageDialog(	
+				null, e.getMessage(), 
+				"ERROR: " + e.getErrorCode(), 
+				JOptionPane.ERROR_MESSAGE
+			);
+		}
+	}
+	
+	@SuppressWarnings("static-access")
+	protected void createPersona()
+	{
+		JOptionPane contingencia = new JOptionPane();
+		
+		// Crear persona de ser necesario
+		String SQLQueryPersonaExiste = 
+			"SELECT * FROM Persona WHERE " +
+			"  Doc_Tipo = '" + tipoDoc + "' AND " +
+			"  Doc_Numero = " + numeroDoc + ";";		
+		try {
+			if (appCore.getValue(SQLQueryPersonaExiste) == null)
+			{
+				String SQLQueryPersona = 
+					"INSERT INTO Persona (`Doc_Tipo`, `Doc_Numero`, `Apellido`, `Nombre`, `UNS_Relacion_Relacion`) " +
+					"VALUES ('" + tipoDoc + "', " + numeroDoc + ", '" + apellido + "', '" + nombre + "', 'Empleado');";
+				appCore.sendCommand(SQLQueryPersona);
+			}			  	
+		} catch (SQLException e) {
+			contingencia.showMessageDialog(	
+				null, e.getMessage(), 
+				"ERROR: " + e.getErrorCode(), 
+				JOptionPane.ERROR_MESSAGE
+			);
+		}
 	}
 	
 	public void cancelar()
@@ -215,6 +289,27 @@ public class Alta_Medicos extends FeatureTemplate
 		{
 			wizardWindow2.setTitle(" -- ERROR: Debe Seleccionar Una Especialidad --");
 		}
+	}
+	
+	protected void loadEspecialidadesExistentes() 
+	{
+		String SQLquery = "SELECT Nombre FROM Especialidad;";
+		try {
+			this.appCore.populateTable(tablaEspExistentes, SQLquery);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}	
+	
+	protected void loadTiposDocumento() {
+		String SQLquery = "SELECT Tipo FROM Doc_Tipo;";
+		try {
+			this.appCore.populateComboBox(docTypes, SQLquery);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 }
 

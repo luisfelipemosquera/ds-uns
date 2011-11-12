@@ -1,10 +1,12 @@
 package sanidadApp.Features;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 import sMySQLappTemplate.Core.Command;
 import sMySQLappTemplate.Core.FeatureTemplate;
@@ -20,6 +22,9 @@ public class Modificacion_Medicos extends Alta_Medicos
 	protected TablaMedicos TablaMedicosExistentes;
 	
 	protected int medico;
+	
+	protected long lastDocNumber;
+	protected String lastDocType;
 	
 	public Modificacion_Medicos(){}
 
@@ -60,24 +65,7 @@ public class Modificacion_Medicos extends Alta_Medicos
 			wizardWindow1 = new WizardDatosMedico_Persona((Modificacion_Medicos)this.receiver);
 			wizardWindow2 = new WizardDatosMedico_Especialidades((Modificacion_Medicos)this.receiver);
 			
-			// Datos de Prueba
-			tablaEspExistentes.setRowCount(3);
-			tablaEspExistentes.setValueAt("Especialidad X", 0, 0);
-			tablaEspExistentes.setValueAt("Especialidad Y", 1, 0);
-			tablaEspExistentes.setValueAt("Especialidad Z", 2, 0);
-			tablaEspPoseidas.setRowCount(1);
-			tablaEspPoseidas.setValueAt("Especialidad R", 0, 0);
-			
-			docTypes.addElement("DNI");
-			docTypes.addElement("LE");
-			docTypes.addElement("LC");
-			
-			TablaMedicosExistentes.setRowCount(1);
-			TablaMedicosExistentes.setValueAt("Gonzalez", 0, 0);
-			TablaMedicosExistentes.setValueAt("Juan Domingo", 0, 1);
-			TablaMedicosExistentes.setValueAt("LE", 0, 2);
-			TablaMedicosExistentes.setValueAt("31298030", 0, 3);
-			// Fin Datos de Prueba			
+			loadMedicos();
 			
 			wizardWindow0.viewMedicos(TablaMedicosExistentes);
 			wizardWindow1.setDocTypeData(docTypes);
@@ -92,6 +80,7 @@ public class Modificacion_Medicos extends Alta_Medicos
 	
 	public void siguiente(int medicoSeleccionado)
 	{
+		loadTiposDocumento();
 		wizardWindow0.setTitle(" -- Seleccion de Medico -- ");
 		try 
 		{
@@ -107,6 +96,9 @@ public class Modificacion_Medicos extends Alta_Medicos
 			
 			if(cargarDatos(tipoDoc, numeroDoc, apellido, nombre))
 			{
+				lastDocType = this.tipoDoc;
+				lastDocNumber = this.numeroDoc;
+				
 				wizardWindow0.setVisible(false);
 				wizardWindow1.setVisible(true);
 			}
@@ -117,34 +109,109 @@ public class Modificacion_Medicos extends Alta_Medicos
 		}		
 	}
 	
-	public void guardar()
+	public void siguiente(String tipoDNI, String numeroDNI, String apellido, String nombre)
 	{
-		// Debug Prints
-		System.out.println("Modificando Entrada Para Medico:");
-		System.out.println("-- Comienzo de Entrada --"); 
-		System.out.println("Tipo DNI: " + tipoDoc);
-		System.out.println("Numero DNI: " + numeroDoc);
-		System.out.println("Apellido: " + apellido);
-		System.out.println("Nombres: " + nombre);
-		System.out.println();
-		Iterator it = cambioEspecialidades.entrySet().iterator();
-	    while (it.hasNext()) {
-	        Map.Entry<String,String> pairs = (Map.Entry<String,String>)it.next();
-	        System.out.println(pairs.getValue() + " " + pairs.getKey());
-	    }
-	    System.out.println("-- Fin de Entrada --"); 
-	    System.out.println();
-		
-		wizardWindow0.dispose();
-		wizardWindow1.dispose();
+		if (this.cargarDatos(tipoDNI, numeroDNI, apellido, nombre))
+		{
+			loadEspecialidadesPoseidas();
+			loadEspecialidadesExistentes();
+			wizardWindow1.setVisible(false);
+			wizardWindow2.setVisible(true);
+		}
+	}
+	
+	// NOTA: si queda tiempo combertir todo esto en transaccion
+	
+	public void guardar()
+	{		
+		if(updateMedic()) updateEspecialidades();
+	    
+	    wizardWindow1.dispose();
 		wizardWindow2.dispose();
 	}
 	
+	@SuppressWarnings("static-access")
+	private boolean updateMedic() 
+	{
+		JOptionPane contingencia = new JOptionPane();
+		
+		String SQLQueryUpdateMedic =
+			"UPDATE Persona " +
+			"  SET Nombre = '" + this.nombre + "', " +
+			"      Apellido = '" + this.apellido + "', " +
+			"      Doc_tipo = '" + this.tipoDoc + "', " +
+			"      Doc_Numero = " + this.numeroDoc + " " +
+			"  WHERE Doc_Tipo = '" + lastDocType + "' AND " +
+			"        Doc_Numero = " + lastDocNumber + ";";
+		try {
+			appCore.sendCommand(SQLQueryUpdateMedic);
+			return true;
+		} catch (SQLException e) {
+			contingencia.showMessageDialog(	
+					null, e.getMessage(), 
+					"ERROR: " + e.getErrorCode(), 
+					JOptionPane.ERROR_MESSAGE
+			);
+		}
+		return false;
+	}
+
 	public void cancelar()
 	{
 		wizardWindow0.dispose();
 		wizardWindow1.dispose();
 		wizardWindow2.dispose();
 	}
+	
+	protected void loadMedicos() 
+	{
+		String SQLquery = "SELECT Apellido, Nombre, Doc_Tipo, Doc_Numero " +
+						  "  FROM Persona NATURAL JOIN Medico;";
+		try {
+			this.appCore.populateTable(TablaMedicosExistentes, SQLquery);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
+	
+	private void loadEspecialidadesPoseidas() {
+		String SQLquery = "SELECT Especialidad_Nombre" +
+						  "	 FROM Especializa" +
+						  "  WHERE Medico_Doc_Tipo = '" + lastDocType + "' AND" +
+						  "  	   Medico_Doc_Numero = '" + lastDocNumber + "';";
+		try {
+			this.appCore.populateTable(tablaEspPoseidas, SQLquery);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	protected void loadEspecialidadesExistentes()
+	{
+		String SQLquery = "SELECT Nombre" +
+						  "  FROM Especialidad" +
+						  "  WHERE NOT EXISTS (" +
+						  "    SELECT Especialidad_Nombre FROM Especializa" +
+						  "    WHERE Medico_Doc_Tipo = '" + lastDocType + "' AND" +
+						  "  	     Medico_Doc_Numero = '" + lastDocNumber + "' AND" +
+						  "          Especialidad.Nombre = Especializa.Especialidad_Nombre);";
+		System.out.println(SQLquery);
+		try {
+			this.appCore.populateTable(tablaEspExistentes, SQLquery);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
 
 }
+
+
+
+
+
+
+

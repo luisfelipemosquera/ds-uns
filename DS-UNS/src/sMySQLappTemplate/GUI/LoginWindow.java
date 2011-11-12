@@ -67,7 +67,7 @@ public class LoginWindow extends JDialog
 		
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		this.setModal(true);
-		this.setTitle("");	
+		this.setTitle("LOGIN");	
 		this.setResizable(false);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);		
 		this.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -125,7 +125,7 @@ public class LoginWindow extends JDialog
 		{
 	         public void mouseClicked(MouseEvent e) 
 	         {
-	        	 tryLogin();
+	        		tryLogin();	        	 
 	         }
 		});
 		
@@ -255,6 +255,6 @@ public class LoginWindow extends JDialog
 	
 	public void setTitle(String title)
 	{
-		super.setTitle(" - LOGIN " + title + "-");
+		super.setTitle(" - " + title + "-");
 	}
 }

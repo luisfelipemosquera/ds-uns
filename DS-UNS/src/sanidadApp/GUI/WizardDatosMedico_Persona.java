@@ -171,4 +171,9 @@ public class WizardDatosMedico_Persona extends JDialog
 	public void setNombre(String nombre) {
 		jTextFieldNombre.setText(nombre);		
 	}
+
+	public void disableKey() {
+		jComboBoxTipoDNI.setEnabled(false);
+		jTextFieldNumeroDNI.setEnabled(false);
+	}
 }
