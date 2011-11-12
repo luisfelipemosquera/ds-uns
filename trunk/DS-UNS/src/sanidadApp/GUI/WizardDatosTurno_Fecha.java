@@ -3,6 +3,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Date;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -14,12 +16,21 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerListModel;
+import javax.swing.SpinnerModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import com.michaelbaranov.microba.calendar.CalendarPane;
 
 import sMySQLappTemplate.GUI.MyTable;
 import sanidadApp.Features.Alta_Turnos;
 import sanidadApp.Features.TablaEspecialidades;
 import sanidadApp.Features.TablaMedicos;
+import sanidadApp.Features.TablaTiposConsulta;
 
 
 /**
@@ -35,37 +46,31 @@ import sanidadApp.Features.TablaMedicos;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 @SuppressWarnings("serial")
-public class WizardDatosTurno extends JDialog
+public class WizardDatosTurno_Fecha extends JDialog
 {	
 	private Alta_Turnos control;
+	private JButton jButtonAnterior;
+	private JScrollPane jScrollPaneFecha;
 	private JButton jButtoncancelar;
 	private JButton jButtonAceptar;
-	private JLabel jLabel1;
+	private JLabel jLabelDuracionElegida;
 	private JSlider jSliderDuracion;
-	private JSpinner jSpinnerHoraInicio;
 	private JLabel jLabelDuracion;
-	private JSpinner jSpinnerFechaInicio;
-	private JLabel jLabelHoraInicio;
 	private JLabel jLabelFechaInicio;
-	private JLabel jLabelEspecialidades;
-	private JLabel jLabelMedicos;
-	private JScrollPane jScrollPaneEspecialidades;
-	private JScrollPane jScrollPaneMedicos;
-	
-	private MyTable tablaMedicos;
-	private MyTable tablaEspExistentes;
+	private JLabel jLabelHoraInicio;
+	CalendarPane datePicker;
 
 	public Alta_Turnos getControl() {
 		return control;
 	}
 
-	public WizardDatosTurno(Alta_Turnos control)
-	{
+	public WizardDatosTurno_Fecha(Alta_Turnos control)
+	{;
 		this.control = control;
 		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter() {
 			    public void windowClosing(WindowEvent we) {
-			    	(((WizardDatosTurno) we.getWindow()).getControl()).cancelar();
+			    	(((WizardDatosTurno_Fecha) we.getWindow()).getControl()).cancelar();
 			    }
 			});
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
@@ -81,79 +86,50 @@ public class WizardDatosTurno extends JDialog
 	protected void initGUI() 
 	{
 		{
-			jScrollPaneMedicos = new JScrollPane();
-			getContentPane().add(jScrollPaneMedicos);
-			jScrollPaneMedicos.setBounds(24, 33, 334, 240);
-		}
-		{
-			jScrollPaneEspecialidades = new JScrollPane();
-			getContentPane().add(jScrollPaneEspecialidades);
-			jScrollPaneEspecialidades.setBounds(392, 33, 157, 240);
-		}
-		{
-			jLabelMedicos = new JLabel();
-			getContentPane().add(jLabelMedicos);
-			jLabelMedicos.setText("Medicos");
-			jLabelMedicos.setBounds(24, 12, 105, 16);
-		}
-		{
-			jLabelEspecialidades = new JLabel();
-			getContentPane().add(jLabelEspecialidades);
-			jLabelEspecialidades.setText("Especialidades");
-			jLabelEspecialidades.setBounds(392, 12, 126, 16);
-		}
-		{
 			jLabelFechaInicio = new JLabel();
 			getContentPane().add(jLabelFechaInicio);
-			jLabelFechaInicio.setText("Fecha Inicio");
-			jLabelFechaInicio.setBounds(24, 293, 86, 16);
+			jLabelFechaInicio.setText("Fecha del Turno");
+			jLabelFechaInicio.setBounds(26, 18, 96, 16);
 		}
 		{
 			jLabelHoraInicio = new JLabel();
 			getContentPane().add(jLabelHoraInicio);
-			jLabelHoraInicio.setText("Hora Inicio");
-			jLabelHoraInicio.setBounds(212, 293, 114, 16);
-		}
-		{
-			SpinnerListModel jSpinnerFechaInicioModel = 
-				new SpinnerListModel(
-						new String[] { "Sun", "Mon" , "Tue" , "Wed" , "Thu" , "Fri" , "Sat" });
-			jSpinnerFechaInicio = new JSpinner();
-			getContentPane().add(jSpinnerFechaInicio);
-			jSpinnerFechaInicio.setModel(jSpinnerFechaInicioModel);
-			jSpinnerFechaInicio.setBounds(24, 315, 146, 23);
+			jLabelHoraInicio.setText("Hora del Turno");
+			jLabelHoraInicio.setBounds(372, 40, 124, 16);
 		}
 		{
 			jLabelDuracion = new JLabel();
 			getContentPane().add(jLabelDuracion);
 			jLabelDuracion.setText("Duracion");
-			jLabelDuracion.setBounds(392, 293, 110, 16);
-		}
-		{
-			SpinnerListModel jSpinnerHoraInicioModel = 
-				new SpinnerListModel(
-						new String[] { "Sun", "Mon" , "Tue" , "Wed" , "Thu" , "Fri" , "Sat" });
-			jSpinnerHoraInicio = new JSpinner();
-			getContentPane().add(jSpinnerHoraInicio);
-			jSpinnerHoraInicio.setModel(jSpinnerHoraInicioModel);
-			jSpinnerHoraInicio.setBounds(212, 315, 146, 23);
+			jLabelDuracion.setBounds(372, 260, 110, 16);
 		}
 		{
 			jSliderDuracion = new JSlider();
 			getContentPane().add(jSliderDuracion);
-			jSliderDuracion.setBounds(387, 315, 162, 22);
+			jSliderDuracion.setBounds(372, 288, 173, 22);
+			jSliderDuracion.setMaximum(16);
+			jSliderDuracion.setMinimum(1);
+			jSliderDuracion.setMinorTickSpacing(1);
+			jSliderDuracion.setSnapToTicks(true);
+			jSliderDuracion.setValue(1);
+			jSliderDuracion.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e){
+					jLabelDuracionElegida.setText(jSliderDuracion.getValue()*15 + " minutos");					
+				}
+			});
 		}
 		{
-			jLabel1 = new JLabel();
-			getContentPane().add(jLabel1);
-			jLabel1.setText("#Horas");
-			jLabel1.setBounds(501, 293, 44, 16);
+			jLabelDuracionElegida = new JLabel();
+			getContentPane().add(jLabelDuracionElegida);
+			jLabelDuracionElegida.setText("15 minutos");
+			jLabelDuracionElegida.setBounds(420, 260, 66, 16);
+			jLabelDuracionElegida.setHorizontalTextPosition(JLabel.RIGHT);
 		}
 		{
 			jButtonAceptar = new JButton();
 			getContentPane().add(jButtonAceptar);
 			jButtonAceptar.setText("Aceptar");
-			jButtonAceptar.setBounds(464, 388, 81, 23);
+			jButtonAceptar.setBounds(464, 386, 81, 23);
 			jButtonAceptar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					control.guardar();
@@ -164,24 +140,34 @@ public class WizardDatosTurno extends JDialog
 			jButtoncancelar = new JButton();
 			getContentPane().add(jButtoncancelar);
 			jButtoncancelar.setText("Cancelar");
-			jButtoncancelar.setBounds(372, 388, 81, 23);
+			jButtoncancelar.setBounds(280, 386, 81, 23);
 			jButtoncancelar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					control.cancelar();
 				}
 			});
 		}
-	}
-	
-	public void viewMedicos(TablaMedicos te)
-	{
-		tablaMedicos = new MyTable(te);
-		jScrollPaneMedicos.setViewportView(tablaMedicos);
-	}
-	
-	public void viewEspExistentes(TablaEspecialidades te)
-	{
-		tablaEspExistentes = new MyTable(te);
-		jScrollPaneEspecialidades.setViewportView(tablaEspExistentes);
+		{
+			jScrollPaneFecha = new JScrollPane();
+			getContentPane().add(jScrollPaneFecha);
+			jScrollPaneFecha.setBounds(26, 40, 316, 270);
+		}
+		{
+			jButtonAnterior = new JButton();
+			getContentPane().add(jButtonAnterior);
+			jButtonAnterior.setText("Anterior");
+			jButtonAnterior.setBounds(372, 387, 81, 21);
+			jButtonAnterior.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					control.anterior();
+				}
+			});
+		}
+		{
+			datePicker = new CalendarPane();
+			datePicker.setEnabled(true);
+			datePicker.setVisible(true);
+			jScrollPaneFecha.setViewportView(datePicker);
+		}
 	}
 }
