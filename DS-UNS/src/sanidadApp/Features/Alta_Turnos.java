@@ -48,12 +48,13 @@ public class Alta_Turnos extends FeatureTemplate
 			loadMedicos(); 					
 			
 			wizardWindow1 = new WizardDatosTurno_Medico((Alta_Turnos)this.receiver);
-			wizardWindow1.setTitle("Nuevo Turno");
+			wizardWindow1.setTitle("Nuevo Turno: Medico y Tipo de Consulta");
 			
 			wizardWindow1.viewMedicos(TablaMedicosExistentes);
 			wizardWindow1.viewTiposConsulta(tablaTiposConsulta);
 			
 			wizardWindow2 = new WizardDatosTurno_Fecha((Alta_Turnos)this.receiver);
+			wizardWindow2.setTitle("Nuevo Turno: Fecha, Hora y Duración");
 			
 			wizardWindow1.setVisible(true);
 			return null;
@@ -62,7 +63,8 @@ public class Alta_Turnos extends FeatureTemplate
 	
 	public void siguiente(int tipoConsultaSeleccionada) 
 	{
-		wizardWindow1.setTitle("Nuevo Turno");
+		wizardWindow1.setTitle("Nuevo Turno: Medico y Tipo de Consulta");
+		wizardWindow2.setTitle("Nuevo Turno: Fecha, Hora y Duración");
 		
 		if(docType.isEmpty() || docNumber.isEmpty())
 		{
@@ -80,7 +82,11 @@ public class Alta_Turnos extends FeatureTemplate
 
 	}
 	
-	public void anterior() {
+	public void anterior() 
+	{
+		wizardWindow1.setTitle("Nuevo Turno: Medico y Tipo de Consulta");
+		wizardWindow2.setTitle("Nuevo Turno: Fecha, Hora y Duración");
+		
 		wizardWindow2.setVisible(false);
 		wizardWindow1.setVisible(true);		
 	}
