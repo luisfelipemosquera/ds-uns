@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.sql.rowset.CachedRowSet;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
@@ -171,10 +172,29 @@ public class Alta_Medicos extends FeatureTemplate
 	    }
 	}
 	
-	/*
-	 * 
-		int res = confirm.showConfirmDialog(null, "Esta seguro que desea eliminar al medico " + apellido);
-	 */
+	public void encontrarPersona(String docTipo, String docNumero)
+	{
+		String SQLQueryPersonaExiste = 
+			"SELECT Apellido, Nombre, UNS_Relacion_Relacion FROM Persona WHERE " +
+			"  Doc_Tipo = '" + docTipo + "' AND " +
+			"  Doc_Numero = " + docNumero + ";";
+		try {
+			CachedRowSet rs = appCore.sendConsult(SQLQueryPersonaExiste);
+			if (rs.next())
+			{
+				wizardWindow1.setApellido(rs.getString(1));
+				wizardWindow1.setNombre(rs.getString(2));
+				wizardWindow1.disableNonKey();
+			}
+			else
+			{
+				wizardWindow1.enableNonKey();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	@SuppressWarnings("static-access")
 	protected void createMedic()

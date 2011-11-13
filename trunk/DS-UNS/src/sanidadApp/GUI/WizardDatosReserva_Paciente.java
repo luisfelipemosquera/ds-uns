@@ -2,6 +2,10 @@ package sanidadApp.GUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -47,12 +51,15 @@ public class WizardDatosReserva_Paciente extends JDialog
 	private Otorgar_Turno control;
 	private JComboBox jComboBoxRelacionUNS;
 	private JLabel jLabelRelacionUNS;
+	
+	private boolean click;
 
 	public Otorgar_Turno getControl() {
 		return control;
 	}
 
 	public WizardDatosReserva_Paciente(Otorgar_Turno receiver){
+		click = true;
 		this.control = receiver;
 		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter() {
@@ -82,6 +89,21 @@ public class WizardDatosReserva_Paciente extends JDialog
 					getContentPane().add(jComboBoxTipoDNI);
 					jComboBoxTipoDNI.setModel(jComboBoxTipoDNIModel);
 					jComboBoxTipoDNI.setBounds(25, 43, 71, 21);
+					jComboBoxTipoDNI.addItemListener(new ItemListener(){
+						@Override
+						public void itemStateChanged(ItemEvent arg0) 
+						{
+							if (click)
+							{
+								control.encontrarPersona(jComboBoxTipoDNI.getSelectedItem().toString(),
+														 jTextFieldNumeroDNI.getText());
+								click = false;
+							}
+							else
+							{
+								click = true;
+							}
+					}});
 				}
 				{
 					jLabelTipoDNI = new JLabel();
@@ -93,6 +115,21 @@ public class WizardDatosReserva_Paciente extends JDialog
 					jTextFieldNumeroDNI = new JTextField();
 					getContentPane().add(jTextFieldNumeroDNI);
 					jTextFieldNumeroDNI.setBounds(108, 43, 260, 21);
+					jTextFieldNumeroDNI.addKeyListener(new KeyListener()
+					{	
+						@Override
+						public void keyPressed(KeyEvent arg0) {}
+						@Override
+						public void keyReleased(KeyEvent arg0) {
+							if (jTextFieldNumeroDNI.getText().length() > 6)
+							  control.encontrarPersona(jComboBoxTipoDNI.getSelectedItem().toString(),
+									 jTextFieldNumeroDNI.getText());
+						}
+
+						@Override
+						public void keyTyped(KeyEvent e) {
+											
+					}});
 				}
 				{
 					jLabelNumeroDNI = new JLabel();
@@ -151,12 +188,8 @@ public class WizardDatosReserva_Paciente extends JDialog
 					});
 				}
 				{
-					ComboBoxModel jComboBoxRelacionUNSModel = 
-						new DefaultComboBoxModel(
-								new String[] { "Item One", "Item Two" });
 					jComboBoxRelacionUNS = new JComboBox();
 					getContentPane().add(jComboBoxRelacionUNS);
-					jComboBoxRelacionUNS.setModel(jComboBoxRelacionUNSModel);
 					jComboBoxRelacionUNS.setBounds(238, 101, 130, 21);
 				}
 				{
@@ -199,5 +232,21 @@ public class WizardDatosReserva_Paciente extends JDialog
 	public void disableKey() {
 		jComboBoxTipoDNI.setEnabled(false);
 		jTextFieldNumeroDNI.setEnabled(false);
+	}
+
+	public void setUNSrel(String string) {
+		jComboBoxRelacionUNS.setSelectedItem(string);		
+	}
+
+	public void disableNonKey() {
+		jComboBoxRelacionUNS.setEnabled(false);
+		jTextFieldApellido.setEnabled(false);
+		jTextFieldNombre.setEnabled(false);		
+	}
+	
+	public void enableNonKey() {
+		jComboBoxRelacionUNS.setEnabled(true);
+		jTextFieldApellido.setEnabled(true);
+		jTextFieldNombre.setEnabled(true);	
 	}
 }
