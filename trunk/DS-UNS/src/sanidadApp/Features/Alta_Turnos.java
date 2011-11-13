@@ -111,6 +111,8 @@ public class Alta_Turnos extends FeatureTemplate
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
+		String SQLqueryTurnosPasados =
+			"SELECT '" + fechaHoraInicio + "' < NOW()";
 		
 		String SQLquerySuperposicion =
 			"SELECT * FROM Turno " +
@@ -121,7 +123,15 @@ public class Alta_Turnos extends FeatureTemplate
 			"('"  + fechaHoraInicio + "' <= Turno.FechaHoraInicio AND '" + fechaHoraFin + "' >= Turno.FechaHoraFin))";
 		
 		try {
-			if (appCore.getValue(SQLquerySuperposicion) != null)
+			if (appCore.getValue(SQLqueryTurnosPasados).toString().compareTo("0") != 0)
+			{
+				contingencia.showMessageDialog(	
+						null, "Todavia no puedes crear turnos en el pasado. \nSorry!", 
+						"ERROR", 
+						JOptionPane.ERROR_MESSAGE
+				);
+			}
+			else if (appCore.getValue(SQLquerySuperposicion) != null)
 			{
 				contingencia.showMessageDialog(	
 						null, "El medico ya tiene un compromiso en ese momento", 
