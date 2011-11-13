@@ -4,6 +4,7 @@ import sMySQLappTemplate.GUI.MyBorder;
 import sMySQLappTemplate.GUI.MyButtonPanel;
 import sMySQLappTemplate.GUI.MyMenuBar;
 import sMySQLappTemplate.GUI.MyNotification;
+import sMySQLappTemplate.GUI.MyNotificationPane;
 import sMySQLappTemplate.GUI.MyTable;
 import sanidadApp.Core.sanidadAppCore;
 
@@ -23,6 +24,8 @@ public class MainWindowSanidad extends sMySQLappTemplate.GUI.MainWindowTemplate
 	
 	protected JScrollPane scrollPrincipal;
 	protected MyTable tablaPrincipal;
+
+	private MyNotificationPane rightPrincipalPane;
 	
 	public MainWindowSanidad(sanidadAppCore AppCore)
 	{
@@ -54,18 +57,13 @@ public class MainWindowSanidad extends sMySQLappTemplate.GUI.MainWindowTemplate
 		
 		// Panel de Notificaciones
 		
-		JPanel rightPrincipalPane = new JPanel();
+		rightPrincipalPane = new MyNotificationPane();
 		BoxLayout layout = new BoxLayout(rightPrincipalPane, BoxLayout.Y_AXIS);
 		rightPrincipalPane.setLayout(layout);
 		rightPrincipalPane.setBorder(new MyBorder(4,"Notificaciones"));
 		
 		this.getContentPane().add(rightPrincipalPane, JSplitPane.RIGHT);
-		
-		// TESTING
-		rightPrincipalPane.add(new MyNotification("Se elimino un turno reservado."));
-		rightPrincipalPane.add(new MyNotification("Se elimino un turno reservado."));
-		rightPrincipalPane.add(new MyNotification("Se elimino un turno reservado."));
-		
+			
 		// Panel de Herramientos de Reservas
 		tools = new MyButtonPanel();
 		
@@ -82,5 +80,10 @@ public class MainWindowSanidad extends sMySQLappTemplate.GUI.MainWindowTemplate
 	{
 		tablaPrincipal = new MyTable(table);
 		scrollPrincipal.setViewportView(tablaPrincipal);
+	}
+	
+	public MyNotificationPane getNotificationPane()
+	{
+		return rightPrincipalPane;
 	}
 }

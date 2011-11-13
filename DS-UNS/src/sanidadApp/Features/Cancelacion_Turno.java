@@ -1,5 +1,8 @@
 package sanidadApp.Features;
 
+import java.sql.SQLException;
+
+import javax.sql.rowset.CachedRowSet;
 import javax.swing.JOptionPane;
 
 import sMySQLappTemplate.Core.Command;
@@ -19,11 +22,15 @@ public class Cancelacion_Turno extends FeatureTemplate
 	protected class GestionTurnos extends Command
 	{
 
+		private String apellido;
+		private String nombre;
+
 		public GestionTurnos(FeatureTemplate feature) {
 			super(feature);
 			// TODO Auto-generated constructor stub
 		}
 
+		@SuppressWarnings("static-access")
 		@Override
 		public Object ExecCommand(Object... args)
 		{
@@ -37,17 +44,52 @@ public class Cancelacion_Turno extends FeatureTemplate
 			else
 			{
 				JOptionPane confirm = new JOptionPane();
-				String msg = "Esta seguro de eliminar el turno? " +
-							 "esto podria causar problemas si el mismo " +
-							 "se encuentra reservado.";
+				
+				String msg = null;
+				String SQLqueryReservadoPor =
+				   "SELECT Apellido, Nombre " +
+				   "  FROM Persona NATURAL JOIN IntraConsulta NATURAL JOIN Consulta " +
+				   "  WHERE " +
+				   "     Consulta_ID = Consulta.ID AND " +
+				   "	 Paciente_Doc_Tipo = Persona.Doc_Tipo AND " +
+				   "	 Paciente_Doc_Numero = Persona.Doc_Numero AND " +
+				   "	 IntraConsulta.Turno_ID = " + turnoSeleccionado + ";" ;
+				
+				try {
+					CachedRowSet rs = appCore.sendConsult(SQLqueryReservadoPor);
+					if (rs.next())
+					{
+						apellido = rs.getString(1);
+						nombre = rs.getString(2);						
+						msg = "Esta seguro de eliminar este turno? \n" +
+							  apellido + " " + nombre + " lo tiene reservado";
+					}
+					else
+					{
+						msg = "Esta seguro de eliminar este turno? \n" +
+						      "el turno no esta reservado";
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				
 				int res = confirm.showConfirmDialog(null, msg);
 				if (res == JOptionPane.YES_OPTION)
 				{
-					// TODO codigo para eliminar turno
-				}
-				else if (res == JOptionPane.CANCEL_OPTION)
-				{
-					// TODO supongo que nada
+					String SQLqueryDeleteConsulta = 
+						"DELETE FROM Consulta " +
+						" WHERE ID = " +
+						" (SELECT Consulta_ID FROM IntraConsulta " +
+						"    WHERE Turno_ID = " + turnoSeleccionado + "); ";
+					String SQLqueryDeleteTurno =
+						"DELETE FROM Turno WHERE Turno.ID = " + turnoSeleccionado + ";";
+					try {
+						appCore.sendCommand(SQLqueryDeleteConsulta);
+						appCore.sendCommand(SQLqueryDeleteTurno);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					((sanidadAppCore)appCore).actualizarTablaTurnos();
 				}
 			}
 			return null;

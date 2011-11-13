@@ -1,6 +1,10 @@
 package sanidadApp.Core;
 
+import java.sql.SQLException;
+
+import javax.sql.rowset.CachedRowSet;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 
 import sMySQLappTemplate.Core.AppCoreTemplate;
 import sMySQLappTemplate.Core.Command;
@@ -28,7 +32,7 @@ public class sanidadAppCore extends AppCoreTemplate
 	protected FeatureTemplate cancelacionTurnos;
 	
 	
-	protected TablaTurnos turnsData;
+	protected TablaTurnos tablaTurnos;
 	
 	public sanidadAppCore()
 	{
@@ -58,9 +62,9 @@ public class sanidadAppCore extends AppCoreTemplate
 	protected void initGUI() {
 		// TODO Auto-generated method stub
 		masterWindow = new MainWindowSanidad(this);
-		turnsData = new TablaTurnos();
-		actualizarTurnData();
-		masterWindow.setTablaPrincipal(turnsData);
+		tablaTurnos = new TablaTurnos();
+		actualizarTablaTurnos();
+		masterWindow.setTablaPrincipal(tablaTurnos);
 	}
 
 	// METODOS PARA REGISTRA BOTONES
@@ -76,13 +80,40 @@ public class sanidadAppCore extends AppCoreTemplate
 		}
 	}
 
-	private void actualizarTurnData() {
-		// TODO Auto-generated method stub
+	public void actualizarTablaTurnos() {
+		String SQLqueryTurnos = 
+		"	SELECT IF(EXISTS(SELECT * FROM IntraConsulta WHERE Turno_ID = Turno.ID) , " +
+		"			'Reservado', 'Disponible') AS Estado,							  " +
+		"			 DATE_FORMAT(FechaHoraInicio, '%Y-%m-%d') AS Dia, 				  " +
+		"	         DATE_FORMAT(FechaHoraInicio, '%T') AS Hora, 					  " +
+		"			 Apellido, Nombre, Turno.ID 									  " +
+		"	  FROM Turno NATURAL JOIN Persona										  " +
+		"	  WHERE Medico_Doc_Tipo = Doc_Tipo AND									  " +
+		"	        Medico_Doc_Numero = Doc_Numero									  " +
+		"	  ORDER BY FechaHoraInicio												  " ;
 		
+		try {
+			populateTable(tablaTurnos, SQLqueryTurnos);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public int getSelectedTurno() 
 	{
-		return masterWindow.getTablaPrincipalSelectedRow();
+		int selectedRow = masterWindow.getTablaPrincipalSelectedRow();
+		int idTurno = -1;
+		
+		try
+		{
+			idTurno = Integer.parseInt(tablaTurnos.getValueAt(selectedRow, 5).toString());
+		}
+		catch (Exception e)	{} // Ignore
+		
+		System.out.println(idTurno);
+
+		
+		return idTurno;
 	}
 }

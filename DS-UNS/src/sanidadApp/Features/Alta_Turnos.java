@@ -137,6 +137,8 @@ public class Alta_Turnos extends FeatureTemplate
 					"       VALUES ('" + fechaHoraInicio + "', '" + fechaHoraFin + "', " +
 					"               '" + docType + "', " + docNumber + ");";
 				appCore.sendCommand(SQLqueryInsert);
+			
+				((sanidadAppCore)appCore).actualizarTablaTurnos();
 				
 				wizardWindow1.dispose();
 				wizardWindow2.dispose();
