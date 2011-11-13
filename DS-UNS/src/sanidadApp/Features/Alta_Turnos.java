@@ -23,11 +23,13 @@ public class Alta_Turnos extends FeatureTemplate
 	protected TablaTiposConsulta tablaTiposConsulta;
 
 	// Datos de turno
-	private String docType;
-	private String docNumber;
+	protected String docType;
+	protected String docNumber;
 	
-	private String fechaHoraInicio;
-	private String fechaHoraFin;
+	protected String fechaHoraInicio;
+	protected String fechaHoraFin;
+	
+	public Alta_Turnos(){};
 	
 	public Alta_Turnos(sanidadAppCore app)
 	{
