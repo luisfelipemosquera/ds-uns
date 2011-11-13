@@ -45,15 +45,6 @@ public class Modificacion_Medicos extends Alta_Medicos
 		@Override
 		public Object ExecCommand(Object... args)
 		{
-			/*
-			try {
-				today = (Date)appCore.getValue("SELECT CURDATE();");
-			} catch (SQLException e) {
-				// TODO	JOptionPane.showMessageDialog(null, "Se produjo un Error al intentar consultar la fecha actual", "- ERROR MOLESTO -", JOptionPane.ERROR_MESSAGE);
-				e.printStackTrace();
-				return null;
-			}
-			*/
 			cambioEspecialidades = new HashMap<String, String>();
 			
 			tablaEspExistentes = new TablaEspecialidades();
@@ -162,6 +153,8 @@ public class Modificacion_Medicos extends Alta_Medicos
 		wizardWindow1.dispose();
 		wizardWindow2.dispose();
 	}
+	
+	public void encontrarPersona(String docTipo, String docNumero){}
 	
 	protected void loadMedicos() 
 	{

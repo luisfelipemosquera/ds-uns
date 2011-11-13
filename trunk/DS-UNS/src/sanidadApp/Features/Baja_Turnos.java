@@ -9,11 +9,11 @@ import sMySQLappTemplate.Core.Command;
 import sMySQLappTemplate.Core.FeatureTemplate;
 import sanidadApp.Core.sanidadAppCore;
 
-public class Cancelacion_Turno extends FeatureTemplate
+public class Baja_Turnos extends FeatureTemplate
 {
 	protected int turnoSeleccionado;
 	
-	public Cancelacion_Turno(sanidadAppCore app)
+	public Baja_Turnos(sanidadAppCore app)
 	{
 		this.appCore = app;
 		app.registerButtonForTools(new GestionTurnos(this), "/images/MedicTurn64_rem.png", "Cancelar Turno");

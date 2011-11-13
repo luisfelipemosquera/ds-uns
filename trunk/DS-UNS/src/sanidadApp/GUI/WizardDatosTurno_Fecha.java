@@ -3,7 +3,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyVetoException;
 import java.sql.Date;
+import java.util.GregorianCalendar;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -191,7 +193,20 @@ public class WizardDatosTurno_Fecha extends JDialog
 			timePiker.setEnabled(true);
 			timePiker.setVisible(true);
 			jScrollPaneClock.setViewportView(timePiker);
+		}		
+	}
+	
+	public void setDate(Date date)
+	{		
+		try {
+			datePicker.setDate(date);
+		} catch (PropertyVetoException e) {
+			e.printStackTrace();
 		}
-		
+	}
+	
+	public void setTime(GregorianCalendar calendar)
+	{
+		timePiker.setCalendar(calendar);
 	}
 }
