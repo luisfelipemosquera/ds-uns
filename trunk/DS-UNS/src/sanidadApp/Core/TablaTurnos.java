@@ -8,8 +8,7 @@ public class TablaTurnos extends javax.swing.table.DefaultTableModel
 		super
 		(
 			new String[][] {},
-	        new String[] {"Estado", "Tipo Consulta", "Dia", "Hora", 
-						  "Apellido Doctor", "Nombre Doctor"}
+	        new String[] {"Estado", "Dia", "Hora", "Apellido Doctor", "Nombre Doctor", "ID Turno"}
 		);
 	}
 	

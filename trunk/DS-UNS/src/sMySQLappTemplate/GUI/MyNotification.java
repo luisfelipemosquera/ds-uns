@@ -25,8 +25,16 @@ public class MyNotification extends JPanel
 	protected Border rolloverBorder;
 	protected Border presedBorder;
 	
-	public MyNotification(String msg)
+	protected int id;
+	protected String type;
+	protected String msg;
+	
+	public MyNotification(int id, String type, String msg)
 	{
+		this.id = id;
+		this.type = type;
+		this.msg = msg;
+		
 		if (warningIcon == null)
 			warningIcon = createImageIcon("/images/Warning-icon.png");
 		
