@@ -2,6 +2,7 @@ package sanidadApp.Features;
 
 import java.sql.SQLException;
 
+import javax.sql.rowset.CachedRowSet;
 import javax.swing.DefaultButtonModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -29,8 +30,6 @@ public class Otorgar_Turno extends FeatureTemplate
 	protected String nombre;
 	protected String relUNS;
 	
-	// Datos Turno
-	protected int turnoID;
 	
 	// Ventanas Wizard
 	protected WizardDatosReserva_Paciente wizardWindow1;
@@ -92,13 +91,17 @@ public class Otorgar_Turno extends FeatureTemplate
 	
 	public void anterior()
 	{
+		wizardWindow2.setTitle("Turnos Disponibles");
+		wizardWindow1.setTitle("Datos Personales");
 		wizardWindow2.setVisible(false);
 		wizardWindow1.setVisible(true);
 	}
 	
 	public void siguiente(String tipoDNI, String numeroDNI, String apellido, 
 			              String nombre, String relacionUns)
-	{	
+	{
+		wizardWindow2.setTitle("Turnos Disponibles");
+		wizardWindow1.setTitle("Datos Personales");
 		if (this.cargarDatos(tipoDNI, numeroDNI, apellido, nombre, relacionUns))
 		{
 			wizardWindow1.setVisible(false);
@@ -106,12 +109,75 @@ public class Otorgar_Turno extends FeatureTemplate
 		}
 	}
 	
-	public void guardar()
-	{		
-		wizardWindow1.dispose();
-		wizardWindow2.dispose();
+	public void guardar(int turnoSeleccionado, String tipoConsulta)
+	{
+		wizardWindow2.setTitle("Turnos Disponibles");		
+		if (turnoSeleccionado < 0)
+		{
+			wizardWindow2.setTitle("ERROR: Debe seleccionar un turno");
+		}
+		else
+		{			
+			crearPersona();
+			crearPaciente();
+			
+			String turnoID = turnosDisponibles.getValueAt(turnoSeleccionado, 4).toString();
+			
+			crearIntraConsulta(tipoConsulta, turnoID);
+			
+			((sanidadAppCore)appCore).actualizarTablaTurnos();
+			
+			wizardWindow1.dispose();
+			wizardWindow2.dispose();
+		}
 	}
 	
+	private void crearIntraConsulta(String tipoConsulta, String turnoID) {
+		String SQLQueryConsulta = 
+			"INSERT INTO Consulta (Tipo_Consulta_Nombre, Paciente_Doc_Tipo, Paciente_Doc_Numero) " +
+			"VALUES ('" + tipoConsulta + "', '"  + tipoDoc + "', " + numeroDoc + "); ";
+		
+		String SQLQueryIntraConsulta = 
+			"INSERT INTO IntraConsulta (Consulta_ID, Turno_ID) " +
+			"VALUES (LAST_INSERT_ID(), "+ turnoID +"); ";
+
+		try {
+			appCore.sendCommand("START TRANSACTION;");
+				appCore.sendCommand(SQLQueryConsulta);
+				appCore.sendCommand(SQLQueryIntraConsulta);
+			appCore.sendCommand("COMMIT;");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+	}
+
+	@SuppressWarnings("static-access")
+	private void crearPaciente() {
+		JOptionPane contingencia = new JOptionPane();
+		
+		// Crear paciente de ser necesario
+		String SQLQueryPacienteExiste = 
+			"SELECT * FROM Paciente WHERE " +
+			"  Doc_Tipo = '" + tipoDoc + "' AND " +
+			"  Doc_Numero = " + numeroDoc + ";";		
+		try {
+			CachedRowSet rs = appCore.sendConsult(SQLQueryPacienteExiste);
+			if (!rs.next())
+			{
+				String SQLQueryPaciente = 
+					"INSERT INTO Paciente (`Doc_Tipo`, `Doc_Numero`) " +
+					"VALUES ('" + tipoDoc + "', " + numeroDoc + ");";
+				appCore.sendCommand(SQLQueryPaciente);
+			}			  	
+		} catch (SQLException e) {
+			contingencia.showMessageDialog(	
+				null, e.getMessage(), 
+				"ERROR: " + e.getErrorCode(), 
+				JOptionPane.ERROR_MESSAGE
+			);
+		}
+	}
+
 	protected boolean cargarDatos(String tipoDNI, String numeroDNI, String apellido, 
 			                      String nombre, String relacionUns)
 	{
@@ -151,7 +217,7 @@ public class Otorgar_Turno extends FeatureTemplate
 	}
 	
 	@SuppressWarnings("static-access")
-	protected void createPersona()
+	protected void crearPersona()
 	{
 		JOptionPane contingencia = new JOptionPane();
 		
@@ -161,11 +227,12 @@ public class Otorgar_Turno extends FeatureTemplate
 			"  Doc_Tipo = '" + tipoDoc + "' AND " +
 			"  Doc_Numero = " + numeroDoc + ";";		
 		try {
-			if (appCore.getValue(SQLQueryPersonaExiste) == null)
+			CachedRowSet rs = appCore.sendConsult(SQLQueryPersonaExiste);
+			if (!rs.next())
 			{
 				String SQLQueryPersona = 
 					"INSERT INTO Persona (`Doc_Tipo`, `Doc_Numero`, `Apellido`, `Nombre`, `UNS_Relacion_Relacion`) " +
-					"VALUES ('" + tipoDoc + "', " + numeroDoc + ", '" + apellido + "', '" + nombre + "', 'Empleado');";
+					"VALUES ('" + tipoDoc + "', " + numeroDoc + ", '" + apellido + "', '" + nombre + "', '" + relUNS + "');";
 				appCore.sendCommand(SQLQueryPersona);
 			}			  	
 		} catch (SQLException e) {
@@ -174,6 +241,31 @@ public class Otorgar_Turno extends FeatureTemplate
 				"ERROR: " + e.getErrorCode(), 
 				JOptionPane.ERROR_MESSAGE
 			);
+		}
+	}
+	
+	public void encontrarPersona(String docTipo, String docNumero)
+	{
+		String SQLQueryPersonaExiste = 
+			"SELECT Apellido, Nombre, UNS_Relacion_Relacion FROM Persona WHERE " +
+			"  Doc_Tipo = '" + docTipo + "' AND " +
+			"  Doc_Numero = " + docNumero + ";";
+		try {
+			CachedRowSet rs = appCore.sendConsult(SQLQueryPersonaExiste);
+			if (rs.next())
+			{
+				wizardWindow1.setApellido(rs.getString(1));
+				wizardWindow1.setNombre(rs.getString(2));
+				wizardWindow1.setUNSrel(rs.getString(3));
+				wizardWindow1.disableNonKey();
+			}
+			else
+			{
+				wizardWindow1.enableNonKey();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -223,7 +315,9 @@ public class Otorgar_Turno extends FeatureTemplate
 			"	  NOT EXISTS (" +
 			"	    SELECT * FROM IntraConsulta WHERE Turno_ID = Turno.ID" +
 			"	  ) AND" +
-			"	  Realiza.Tipo_Consulta_Nombre = '" + tipoConsulta + "';";
+			"	  Realiza.Tipo_Consulta_Nombre = '" + tipoConsulta + "'" +
+			
+			"   ORDER BY FechaHoraInicio;";
 		
 		try {
 			appCore.populateTable(turnosDisponibles, SQLqueryTurnosDisponibles);

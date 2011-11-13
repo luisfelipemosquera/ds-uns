@@ -85,7 +85,8 @@ public class WizardDatosReserva_Turno extends JDialog
 			jButtonAceptar.setBounds(476, 383, 75, 21);
 			jButtonAceptar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
-					control.guardar();
+					control.guardar(tablaTurnosDisponibles.getSelectedRow(),
+									jComboBoxTiposConsulta.getSelectedItem().toString());
 				}
 			});
 		}

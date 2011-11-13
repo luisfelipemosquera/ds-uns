@@ -2,6 +2,10 @@ package sanidadApp.GUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -44,11 +48,14 @@ public class WizardDatosMedico_Persona extends JDialog
 	
 	private Alta_Medicos control;
 	
+	private boolean click;
+	
 	public Alta_Medicos getControl() {
 		return control;
 	}
 
 	public WizardDatosMedico_Persona(Alta_Medicos control){
+		click = true;
 		this.control = control;
 		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter() {
@@ -78,6 +85,21 @@ public class WizardDatosMedico_Persona extends JDialog
 					getContentPane().add(jComboBoxTipoDNI);
 					jComboBoxTipoDNI.setModel(jComboBoxTipoDNIModel);
 					jComboBoxTipoDNI.setBounds(25, 43, 71, 21);
+					jComboBoxTipoDNI.addItemListener(new ItemListener(){
+						@Override
+						public void itemStateChanged(ItemEvent arg0) 
+						{
+							if (click)
+							{
+								control.encontrarPersona(jComboBoxTipoDNI.getSelectedItem().toString(),
+														 jTextFieldNumeroDNI.getText());
+								click = false;
+							}
+							else
+							{
+								click = true;
+							}
+					}});
 				}
 				{
 					jLabelTipoDNI = new JLabel();
@@ -89,6 +111,21 @@ public class WizardDatosMedico_Persona extends JDialog
 					jTextFieldNumeroDNI = new JTextField();
 					getContentPane().add(jTextFieldNumeroDNI);
 					jTextFieldNumeroDNI.setBounds(108, 43, 260, 21);
+					jTextFieldNumeroDNI.addKeyListener(new KeyListener()
+					{	
+						@Override
+						public void keyPressed(KeyEvent arg0) {}
+						@Override
+						public void keyReleased(KeyEvent arg0) {
+							if (jTextFieldNumeroDNI.getText().length() > 6)
+							  control.encontrarPersona(jComboBoxTipoDNI.getSelectedItem().toString(),
+									 jTextFieldNumeroDNI.getText());
+						}
+
+						@Override
+						public void keyTyped(KeyEvent e) {
+											
+					}});
 				}
 				{
 					jLabelNumeroDNI = new JLabel();
@@ -175,5 +212,15 @@ public class WizardDatosMedico_Persona extends JDialog
 	public void disableKey() {
 		jComboBoxTipoDNI.setEnabled(false);
 		jTextFieldNumeroDNI.setEnabled(false);
+	}
+
+	public void disableNonKey() {
+		jTextFieldApellido.setEnabled(false);
+		jTextFieldNombre.setEnabled(false);		
+	}
+
+	public void enableNonKey() {
+		jTextFieldApellido.setEnabled(true);
+		jTextFieldNombre.setEnabled(true);		
 	}
 }
