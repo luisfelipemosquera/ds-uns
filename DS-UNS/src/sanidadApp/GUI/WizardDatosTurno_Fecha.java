@@ -1,6 +1,8 @@
 package sanidadApp.GUI;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
@@ -186,7 +188,7 @@ public class WizardDatosTurno_Fecha extends JDialog
 			datePicker.setEnabled(true);
 			datePicker.setVisible(true);
 			jScrollPaneFecha.setViewportView(datePicker);
-			datePicker.setPreferredSize(new java.awt.Dimension(299, 267));
+			datePicker.setPreferredSize(new java.awt.Dimension(299, 267));		
 		}
 		{
 			timePiker = new TimePanel();

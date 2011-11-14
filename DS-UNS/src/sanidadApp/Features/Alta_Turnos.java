@@ -68,10 +68,16 @@ public class Alta_Turnos extends FeatureTemplate
 		}		
 	}
 	
-	public void siguiente() 
+	public void siguiente(int selectedRow) 
 	{
 		wizardWindow1.setTitle("Nuevo Turno: Medico");
 		wizardWindow2.setTitle("Nuevo Turno: Fecha, Hora y Duración");
+		
+		if (selectedRow < 0)
+		{
+			wizardWindow1.setTitle("ERROR: Debe seleccionar un medico para continuar");
+			return;
+		}
 		
 		if(docType.isEmpty() || docNumber.isEmpty())
 		{
@@ -92,13 +98,6 @@ public class Alta_Turnos extends FeatureTemplate
 		wizardWindow2.setVisible(false);
 		wizardWindow1.setVisible(true);		
 	}
-	
-	/*
-	 * ((" +
-			"   '" + fechaHoraInicio + "' <= Turno.FechaHoraFin AND" +
-			"   '" + fechaHoraInicio + "' >= Turno.FechaHoraInicio ) OR (" +
-			"   '" + fechaHoraFin + "' >= Turno.FechaHoraInicio";
-	 */
 	
 	@SuppressWarnings("static-access")
 	public void guardar(Date date, GregorianCalendar calendar, int duracion)
@@ -182,25 +181,6 @@ public class Alta_Turnos extends FeatureTemplate
 		}		
 	}
 	
-	/*
-	private void loadTipoConsulta() {
-		String SQLquery = "SELECT DISTINCT Tipo_Consulta_Nombre" +
-						  "	 FROM Realiza" +
-						  "  WHERE EXISTS (" +
-						  "    SELECT * FROM Especializa " +
-						  "      WHERE Medico_Doc_Tipo = '" + docType + "' AND" +
-						  "  	       Medico_Doc_Numero = " + docNumber + " AND" +
-						  "            Especializa.Especialidad_Nombre = Realiza.Especialidad_Nombre" +
-						  "  );";
-		try {
-			this.appCore.populateTable(tablaTiposConsulta, SQLquery);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-	}
-	*/
-	
 	public void medico_seleccionado(int medic)
 	{
 		docType = TablaMedicosExistentes.getValueAt(medic, 2).toString();
@@ -233,6 +213,10 @@ public class Alta_Turnos extends FeatureTemplate
 			"  '%Y-%m-%d %T');";
 
 		fechaHoraFin = appCore.getValue(SQLquerySumarTiempo).toString();
+	}
+
+	public void resetTitle() {
+		wizardWindow2.setTitle("Nuevo Turno: Fecha, Hora y Duración");		
 	}
 }
 

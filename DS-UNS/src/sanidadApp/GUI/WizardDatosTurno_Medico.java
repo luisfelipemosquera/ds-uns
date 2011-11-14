@@ -102,7 +102,7 @@ public class WizardDatosTurno_Medico extends JDialog
 			jButtonSiguiente.setBounds(489, 395, 81, 23);
 			jButtonSiguiente.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
-					control.siguiente();
+					control.siguiente(tablaMedicos.getSelectedRow());
 				}
 			});
 		}
