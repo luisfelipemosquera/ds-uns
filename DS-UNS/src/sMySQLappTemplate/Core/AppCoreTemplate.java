@@ -341,4 +341,9 @@ public abstract class AppCoreTemplate
 	   	 		comm.ExecCommand();
 	    }
 	}
+
+	public void setSelectedMedic(String string, String string2) {
+		// TODO Auto-generated method stub
+		
+	}
 }

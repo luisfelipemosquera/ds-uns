@@ -200,6 +200,7 @@ public class WizardDatosTurno_Fecha extends JDialog
 	{		
 		try {
 			datePicker.setDate(date);
+			System.out.println(datePicker.getDate());
 		} catch (PropertyVetoException e) {
 			e.printStackTrace();
 		}

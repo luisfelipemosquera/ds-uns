@@ -86,7 +86,7 @@ ENGINE = InnoDB;
 -- Table `sanidad-db`.`Consulta`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Consulta` (
-  `ID` INT NOT NULL ,
+  `ID` INT NOT NULL AUTO_INCREMENT ,
   `Tipo_Consulta_Nombre` VARCHAR(45) NOT NULL ,
   `Paciente_Doc_Tipo` VARCHAR(20) NOT NULL ,
   `Paciente_Doc_Numero` INT NOT NULL ,
@@ -96,13 +96,13 @@ CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Consulta` (
   CONSTRAINT `fk_Consulta_Tipo_Consulta1`
     FOREIGN KEY (`Tipo_Consulta_Nombre` )
     REFERENCES `sanidad-db`.`Tipo_Consulta` (`Nombre` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Consulta_Paciente1`
     FOREIGN KEY (`Paciente_Doc_Tipo` , `Paciente_Doc_Numero` )
     REFERENCES `sanidad-db`.`Paciente` (`Doc_Tipo` , `Doc_Numero` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -182,13 +182,53 @@ CREATE  TABLE IF NOT EXISTS `sanidad-db`.`InterConsulta` (
   CONSTRAINT `fk_InterConsulta_Consulta1`
     FOREIGN KEY (`Consulta_ID` )
     REFERENCES `sanidad-db`.`Consulta` (`ID` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_InterConsulta_Medico1`
     FOREIGN KEY (`Medico_Doc_Tipo` , `Medico_Doc_Numero` )
     REFERENCES `sanidad-db`.`Medico` (`Doc_Tipo` , `Doc_Numero` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `sanidad-db`.`Turno`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Turno` (
+  `ID` INT NOT NULL AUTO_INCREMENT ,
+  `FechaHoraInicio` DATETIME NOT NULL ,
+  `FechaHoraFin` DATETIME NOT NULL ,
+  `Medico_Doc_Tipo` VARCHAR(20) NOT NULL ,
+  `Medico_Doc_Numero` INT NOT NULL ,
+  PRIMARY KEY (`ID`) ,
+  INDEX `fk_Turno_Medico1` (`Medico_Doc_Tipo` ASC, `Medico_Doc_Numero` ASC) ,
+  CONSTRAINT `fk_Turno_Medico1`
+    FOREIGN KEY (`Medico_Doc_Tipo` , `Medico_Doc_Numero` )
+    REFERENCES `sanidad-db`.`Medico` (`Doc_Tipo` , `Doc_Numero` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `sanidad-db`.`IntraConsulta`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sanidad-db`.`IntraConsulta` (
+  `Consulta_ID` INT NOT NULL ,
+  `Turno_ID` INT NOT NULL ,
+  PRIMARY KEY (`Consulta_ID`) ,
+  INDEX `fk_IntraConsulta_Turno1` (`Turno_ID` ASC) ,
+  CONSTRAINT `fk_IntraConsulta_Consulta1`
+    FOREIGN KEY (`Consulta_ID` )
+    REFERENCES `sanidad-db`.`Consulta` (`ID` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_IntraConsulta_Turno1`
+    FOREIGN KEY (`Turno_ID` )
+    REFERENCES `sanidad-db`.`Turno` (`ID` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -225,47 +265,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `sanidad-db`.`Turno`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Turno` (
-  `ID` INT NOT NULL AUTO_INCREMENT ,
-  `FechaHoraInicio` DATETIME NOT NULL ,
-  `FechaHoraFin` DATETIME NOT NULL ,
-  `Medico_Doc_Tipo` VARCHAR(20) NOT NULL ,
-  `Medico_Doc_Numero` INT NOT NULL ,
-  `Especialidad_Nombre` VARCHAR(45) NOT NULL ,
-  PRIMARY KEY (`ID`) ,
-  INDEX `fk_Turno_Especializa1` (`Medico_Doc_Tipo` ASC, `Medico_Doc_Numero` ASC, `Especialidad_Nombre` ASC) ,
-  CONSTRAINT `fk_Turno_Especializa1`
-    FOREIGN KEY (`Medico_Doc_Tipo` , `Medico_Doc_Numero` , `Especialidad_Nombre` )
-    REFERENCES `sanidad-db`.`Especializa` (`Medico_Doc_Tipo` , `Medico_Doc_Numero` , `Especialidad_Nombre` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `sanidad-db`.`IntraConsulta`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `sanidad-db`.`IntraConsulta` (
-  `Consulta_ID` INT NOT NULL ,
-  `Turno_ID` INT NOT NULL ,
-  PRIMARY KEY (`Consulta_ID`) ,
-  INDEX `fk_IntraConsulta_Turno1` (`Turno_ID` ASC) ,
-  CONSTRAINT `fk_IntraConsulta_Consulta1`
-    FOREIGN KEY (`Consulta_ID` )
-    REFERENCES `sanidad-db`.`Consulta` (`ID` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_IntraConsulta_Turno1`
-    FOREIGN KEY (`Turno_ID` )
-    REFERENCES `sanidad-db`.`Turno` (`ID` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `sanidad-db`.`Realiza`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Realiza` (
@@ -281,6 +280,40 @@ CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Realiza` (
   CONSTRAINT `fk_Realizar_Tipo_Consulta1`
     FOREIGN KEY (`Tipo_Consulta_Nombre` )
     REFERENCES `sanidad-db`.`Tipo_Consulta` (`Nombre` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `sanidad-db`.`Tipo_Notificacion`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Tipo_Notificacion` (
+  `Nombre` VARCHAR(20) NOT NULL ,
+  PRIMARY KEY (`Nombre`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `sanidad-db`.`Notificacion`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sanidad-db`.`Notificacion` (
+  `ID` INT NOT NULL AUTO_INCREMENT ,
+  `Tipo_Notificacion` VARCHAR(20) NOT NULL ,
+  `Persona_Doc_Tipo` VARCHAR(20) NOT NULL ,
+  `Persona_Doc_Numero` INT NOT NULL ,
+  `Mensage` TEXT NULL ,
+  PRIMARY KEY (`ID`) ,
+  INDEX `fk_Notificacion_Tipo_Notificacion1` (`Tipo_Notificacion` ASC) ,
+  INDEX `fk_Notificacion_Persona1` (`Persona_Doc_Tipo` ASC, `Persona_Doc_Numero` ASC) ,
+  CONSTRAINT `fk_Notificacion_Tipo_Notificacion1`
+    FOREIGN KEY (`Tipo_Notificacion` )
+    REFERENCES `sanidad-db`.`Tipo_Notificacion` (`Nombre` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Notificacion_Persona1`
+    FOREIGN KEY (`Persona_Doc_Tipo` , `Persona_Doc_Numero` )
+    REFERENCES `sanidad-db`.`Persona` (`Doc_Tipo` , `Doc_Numero` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -415,5 +448,15 @@ INSERT INTO `sanidad-db`.`Realiza` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre
 INSERT INTO `sanidad-db`.`Realiza` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Ginecología', 'Ginecología');
 INSERT INTO `sanidad-db`.`Realiza` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Odontología', 'Odontología');
 INSERT INTO `sanidad-db`.`Realiza` (`Especialidad_Nombre`, `Tipo_Consulta_Nombre`) VALUES ('Enfermería', 'Enfermería');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `sanidad-db`.`Tipo_Notificacion`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `sanidad-db`;
+INSERT INTO `sanidad-db`.`Tipo_Notificacion` (`Nombre`) VALUES ('Cancelacion_Turno');
+INSERT INTO `sanidad-db`.`Tipo_Notificacion` (`Nombre`) VALUES ('Hora_Consulta');
 
 COMMIT;

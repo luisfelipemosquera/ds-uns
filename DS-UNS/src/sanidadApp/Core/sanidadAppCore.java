@@ -11,6 +11,7 @@ import sanidadApp.Features.Alta_Turnos;
 import sanidadApp.Features.Baja_Turnos;
 import sanidadApp.Features.Baja_Medicos;
 import sanidadApp.Features.Modificacion_Medicos;
+import sanidadApp.Features.Modificacion_Turnos;
 import sanidadApp.Features.Otorgar_Turno;
 import sanidadApp.GUI.MainWindowSanidad;
 
@@ -25,6 +26,7 @@ public class sanidadAppCore extends AppCoreTemplate
 	protected FeatureTemplate eliminacionMedicos;
 	
 	protected FeatureTemplate altaTurnos;
+	protected FeatureTemplate modificacionTurnos;
 	protected FeatureTemplate cancelacionTurnos;
 	
 	
@@ -47,6 +49,7 @@ public class sanidadAppCore extends AppCoreTemplate
 		otorgarTurno = new Otorgar_Turno(this);
 		
 		altaTurnos = new Alta_Turnos(this);
+		modificacionTurnos = new Modificacion_Turnos(this);
 		cancelacionTurnos = new Baja_Turnos(this);
 		
 		altaMedicos = new Alta_Medicos(this);
