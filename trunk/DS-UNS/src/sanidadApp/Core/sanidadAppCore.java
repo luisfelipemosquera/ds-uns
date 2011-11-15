@@ -2,6 +2,10 @@ package sanidadApp.Core;
 
 import java.sql.SQLException;
 
+import javax.sql.rowset.CachedRowSet;
+import javax.swing.JTextArea;
+import javax.swing.table.DefaultTableModel;
+
 import sMySQLappTemplate.Core.AppCoreTemplate;
 import sMySQLappTemplate.Core.Command;
 import sMySQLappTemplate.Core.FeatureTemplate;
@@ -13,6 +17,7 @@ import sanidadApp.Features.Baja_Medicos;
 import sanidadApp.Features.Modificacion_Medicos;
 import sanidadApp.Features.Modificacion_Turnos;
 import sanidadApp.Features.Otorgar_Turno;
+import sanidadApp.Features.Reporte_Turnos_Dia;
 import sanidadApp.GUI.MainWindowSanidad;
 
 public class sanidadAppCore extends AppCoreTemplate 
@@ -28,6 +33,8 @@ public class sanidadAppCore extends AppCoreTemplate
 	protected FeatureTemplate altaTurnos;
 	protected FeatureTemplate modificacionTurnos;
 	protected FeatureTemplate cancelacionTurnos;
+	
+	protected FeatureTemplate reporteTurnosDia;
 	
 	
 	protected TablaTurnos tablaTurnos;
@@ -55,6 +62,8 @@ public class sanidadAppCore extends AppCoreTemplate
 		altaMedicos = new Alta_Medicos(this);
 		modificacionMedicos = new Modificacion_Medicos(this);
 		eliminacionMedicos = new Baja_Medicos(this);
+		
+		reporteTurnosDia = new Reporte_Turnos_Dia(this);
 	}
 
 	@Override
